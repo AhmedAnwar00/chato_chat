@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_chatoo_chat/core/theme/app_colors.dart';
 import 'package:my_chatoo_chat/features/splash/model/splash_content.dart';
 
 class SplashBackdrop extends StatelessWidget {
@@ -11,7 +12,7 @@ class SplashBackdrop extends StatelessWidget {
     final patternPath = splash.patternPath;
     if (patternPath == null) {
       return const ColoredBox(
-        color: Color(0xFF000000),
+        color: AppColors.background,
         child: SizedBox.expand(),
       );
     }

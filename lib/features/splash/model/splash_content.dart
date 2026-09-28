@@ -1,5 +1,5 @@
-import 'dart:ui';
-
+import 'package:flutter/material.dart';
+import 'package:my_chatoo_chat/core/theme/app_colors.dart';
 import 'package:my_chatoo_chat/gen/assets.gen.dart';
 
 class SplashContent {
@@ -15,13 +15,11 @@ class SplashContent {
   final Color primary;
   final String? patternPath;
 
-  static const Color brand = Color(0xFFC2F158);
-
   factory SplashContent.aboveAndroid12() {
     return SplashContent(
       logoPath: Assets.images.splashLogo.path,
       titleLines: const ['Linoooooo', 'Chat'],
-      primary: brand,
+      primary: AppColors.primary,
     );
   }
 
@@ -29,7 +27,7 @@ class SplashContent {
     return SplashContent(
       logoPath: Assets.images.splashLogo.path,
       titleLines: const ['Linoooooo', 'Chat'],
-      primary: brand,
+      primary: AppColors.primary,
       patternPath: Assets.images.splashPattern.path,
     );
   }
