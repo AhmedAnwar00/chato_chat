@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_chatoo_chat/core/theme/app_colors.dart';
 import 'package:my_chatoo_chat/core/theme/app_text_styles.dart';
 
 class SplashTitle extends StatelessWidget {
@@ -6,7 +7,10 @@ class SplashTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = AppTextStyles.splashTitle;
+    final isDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+    final style = AppTextStyles.splashTitle.copyWith(
+      color: isDark ? AppColors.primary : AppColors.primaryDark,
+    );
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [

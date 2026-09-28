@@ -9,10 +9,16 @@ class SplashBackdrop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
     if (!showPattern) {
-      return const ColoredBox(
-        color: AppColors.primary,
-        child: SizedBox.expand(),
+      return ColoredBox(
+        color: isDark ? AppColors.background : AppColors.primary,
+        child: const SizedBox.expand(),
+      );
+    }
+    if (isDark) {
+      return SizedBox.expand(
+        child: Image.asset(Assets.images.splashPattern.path, fit: BoxFit.cover),
       );
     }
     return ColoredBox(

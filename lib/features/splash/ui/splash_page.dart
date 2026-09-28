@@ -36,7 +36,10 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     final showPattern = _showPattern;
-    final backgroundColor = showPattern == false
+    final isDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+    final backgroundColor = isDark
+        ? AppColors.background
+        : showPattern == false
         ? AppColors.primary
         : AppColors.surfaceChat;
     return Scaffold(
