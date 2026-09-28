@@ -14,6 +14,7 @@ class AppColors {
   static const Color socialFill = Color(0x4DC2F158);
   static const Color lineLight = Color(0xFFE0E5EC);
   static const Color lineDark = Color(0xFF3A3A3A);
+  static const Color accountPrompt = Color(0xFF828282);
 
   static Color signInTitle(Brightness brightness) {
     return brightness == Brightness.dark ? primary : primaryDark;
@@ -25,5 +26,9 @@ class AppColors {
 
   static Color divider(Brightness brightness) {
     return brightness == Brightness.dark ? lineDark : lineLight;
+  }
+
+  static Color signUpLink(Brightness brightness) {
+    return brightness == Brightness.dark ? primary : primaryDark;
   }
 }

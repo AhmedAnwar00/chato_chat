@@ -52,4 +52,21 @@ class AppTextStyles {
     fontWeight: FontWeight.w500,
     height: 24 / 16,
   );
+
+  static TextStyle get loginAccountPrompt => GoogleFonts.poppins(
+    color: AppColors.accountPrompt,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    height: 36 / 14,
+  );
+
+  static TextStyle get loginSignUpLink => GoogleFonts.poppins(
+    color: AppColors.primaryDark,
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    height: 36 / 14,
+    decoration: TextDecoration.underline,
+    decorationColor: AppColors.primaryDark,
+    decorationStyle: TextDecorationStyle.solid,
+  );
 }
