@@ -1,6 +1,5 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
-import 'package:my_chatoo_chat/features/splash/model/splash_content.dart';
 
 class SplashController {
   SplashController({Future<int?> Function()? androidSdk})
@@ -10,12 +9,12 @@ class SplashController {
 
   static const android12Sdk = 31;
 
-  Future<SplashContent> load() async {
+  Future<bool> load() async {
     final sdk = await _androidSdk();
     if (sdk != null && sdk >= android12Sdk) {
-      return SplashContent.aboveAndroid12();
+      return false;
     }
-    return SplashContent.underAndroid12();
+    return true;
   }
 
   static Future<int?> _deviceSdk() async {
