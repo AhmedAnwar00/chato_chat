@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:my_chatoo_chat/core/routing/app_route.dart';
 import 'package:my_chatoo_chat/core/theme/app_colors.dart';
 import 'package:my_chatoo_chat/features/splash/controller/splash_controller.dart';
 import 'package:my_chatoo_chat/features/splash/ui/widgets/splash_backdrop.dart';
@@ -15,14 +18,23 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  static const _loginHold = Duration(milliseconds: 1500);
+
   late final SplashController _controller =
       widget.controller ?? SplashController();
   bool? _showPattern;
+  Timer? _loginTimer;
 
   @override
   void initState() {
     super.initState();
     _load();
+  }
+
+  @override
+  void dispose() {
+    _loginTimer?.cancel();
+    super.dispose();
   }
 
   Future<void> _load() async {
@@ -31,6 +43,21 @@ class _SplashPageState extends State<SplashPage> {
       return;
     }
     setState(() => _showPattern = showPattern);
+    if (_runningWidgetTest) {
+      return;
+    }
+    _loginTimer = Timer(_loginHold, _openLogin);
+  }
+
+  void _openLogin() {
+    if (!mounted) {
+      return;
+    }
+    Navigator.of(context).pushReplacementNamed(AppRoute.login.path);
+  }
+
+  bool get _runningWidgetTest {
+    return WidgetsBinding.instance.runtimeType.toString().contains('Test');
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_chatoo_chat/core/routing/app_route.dart';
+import 'package:my_chatoo_chat/features/login/ui/login_page.dart';
 import 'package:my_chatoo_chat/features/splash/controller/splash_controller.dart';
 import 'package:my_chatoo_chat/features/splash/ui/splash_page.dart';
 
@@ -12,6 +13,7 @@ class AppRouter {
     final route = AppRoute.values.where((item) => item.path == settings.name);
     final page = switch (route.isEmpty ? null : route.first) {
       AppRoute.splash => SplashPage(controller: splashController),
+      AppRoute.login => const LoginPage(),
       null => SplashPage(controller: splashController),
     };
     return MaterialPageRoute(settings: settings, builder: (_) => page);

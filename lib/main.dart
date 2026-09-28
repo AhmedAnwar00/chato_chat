@@ -19,7 +19,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Linoooooo Chat',
-      theme: AppTheme.data,
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.system,
       initialRoute: AppRoute.splash.path,
       onGenerateRoute: router.onGenerateRoute,
     );

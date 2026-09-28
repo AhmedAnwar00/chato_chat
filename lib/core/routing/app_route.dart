@@ -1,5 +1,6 @@
 enum AppRoute {
-  splash('/');
+  splash('/'),
+  login('/login');
 
   const AppRoute(this.path);
 
