@@ -11,12 +11,24 @@ class SplashBackdrop extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!showPattern) {
       return const ColoredBox(
-        color: AppColors.background,
+        color: AppColors.primary,
         child: SizedBox.expand(),
       );
     }
-    return SizedBox.expand(
-      child: Image.asset(Assets.images.splashPattern.path, fit: BoxFit.cover),
+    return ColoredBox(
+      color: AppColors.surfaceChat,
+      child: SizedBox.expand(
+        child: Opacity(
+          opacity: 0.1,
+          child: Image.asset(
+            Assets.images.splashPatternLight.path,
+            fit: BoxFit.cover,
+            alignment: Alignment.topLeft,
+            color: AppColors.surfaceChat,
+            colorBlendMode: BlendMode.difference,
+          ),
+        ),
+      ),
     );
   }
 }

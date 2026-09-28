@@ -22,8 +22,16 @@ class $AssetsImagesGen {
   AssetGenImage get splashPattern =>
       const AssetGenImage('assets/images/splash_pattern.png');
 
+  /// File path: assets/images/splash_pattern_light.png
+  AssetGenImage get splashPatternLight =>
+      const AssetGenImage('assets/images/splash_pattern_light.png');
+
   /// List of all assets
-  List<AssetGenImage> get values => [splashLogo, splashPattern];
+  List<AssetGenImage> get values => [
+    splashLogo,
+    splashPattern,
+    splashPatternLight,
+  ];
 }
 
 abstract final class Assets {

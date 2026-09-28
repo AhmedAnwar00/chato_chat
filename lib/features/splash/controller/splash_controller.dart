@@ -7,11 +7,11 @@ class SplashController {
 
   final Future<int?> Function() _androidSdk;
 
-  static const android12Sdk = 31;
+  static const android13Sdk = 33;
 
   Future<bool> load() async {
     final sdk = await _androidSdk();
-    if (sdk != null && sdk >= android12Sdk) {
+    if (sdk != null && sdk >= android13Sdk) {
       return false;
     }
     return true;

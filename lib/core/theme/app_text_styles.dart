@@ -6,7 +6,7 @@ class AppTextStyles {
   const AppTextStyles._();
 
   static TextStyle get splashTitle => GoogleFonts.cairo(
-    color: AppColors.primary,
+    color: AppColors.primaryDark,
     fontSize: 46.098,
     fontWeight: FontWeight.w900,
     height: 51 / 46.098,

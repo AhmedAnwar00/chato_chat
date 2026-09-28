@@ -36,8 +36,11 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     final showPattern = _showPattern;
+    final backgroundColor = showPattern == false
+        ? AppColors.primary
+        : AppColors.surfaceChat;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: backgroundColor,
       body: showPattern == null
           ? const SizedBox.shrink()
           : Stack(
