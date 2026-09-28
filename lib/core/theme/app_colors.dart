@@ -15,6 +15,7 @@ class AppColors {
   static const Color lineLight = Color(0xFFE0E5EC);
   static const Color lineDark = Color(0xFF3A3A3A);
   static const Color accountPrompt = Color(0xFF828282);
+  static const Color gray800 = Color(0xFF3B4054);
 
   static Color signInTitle(Brightness brightness) {
     return brightness == Brightness.dark ? primary : primaryDark;

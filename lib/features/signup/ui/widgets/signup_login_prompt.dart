@@ -4,30 +4,35 @@ import 'package:my_chatoo_chat/core/routing/app_route.dart';
 import 'package:my_chatoo_chat/core/theme/app_colors.dart';
 import 'package:my_chatoo_chat/core/theme/app_text_styles.dart';
 
-class LoginSignUpPrompt extends StatefulWidget {
-  const LoginSignUpPrompt({super.key});
+class SignupLoginPrompt extends StatefulWidget {
+  const SignupLoginPrompt({super.key});
 
   @override
-  State<LoginSignUpPrompt> createState() => _LoginSignUpPromptState();
+  State<SignupLoginPrompt> createState() => _SignupLoginPromptState();
 }
 
-class _LoginSignUpPromptState extends State<LoginSignUpPrompt> {
-  late final TapGestureRecognizer _signUpTap;
+class _SignupLoginPromptState extends State<SignupLoginPrompt> {
+  late final TapGestureRecognizer _loginTap;
 
   @override
   void initState() {
     super.initState();
-    _signUpTap = TapGestureRecognizer()..onTap = _openSignUp;
+    _loginTap = TapGestureRecognizer()..onTap = _openLogin;
   }
 
   @override
   void dispose() {
-    _signUpTap.dispose();
+    _loginTap.dispose();
     super.dispose();
   }
 
-  void _openSignUp() {
-    Navigator.of(context).pushNamed(AppRoute.signUp.path);
+  void _openLogin() {
+    final navigator = Navigator.of(context);
+    if (navigator.canPop()) {
+      navigator.pop();
+      return;
+    }
+    navigator.pushReplacementNamed(AppRoute.login.path);
   }
 
   @override
@@ -35,16 +40,16 @@ class _LoginSignUpPromptState extends State<LoginSignUpPrompt> {
     final linkColor = AppColors.signUpLink(Theme.of(context).brightness);
     return Text.rich(
       TextSpan(
-        text: 'Don\u2019t have an account? ',
+        text: 'Have an account already? ',
         style: AppTextStyles.loginAccountPrompt,
         children: [
           TextSpan(
-            text: 'Sign up now',
+            text: 'Log in',
             style: AppTextStyles.loginSignUpLink.copyWith(
               color: linkColor,
               decorationColor: linkColor,
             ),
-            recognizer: _signUpTap,
+            recognizer: _loginTap,
           ),
         ],
       ),

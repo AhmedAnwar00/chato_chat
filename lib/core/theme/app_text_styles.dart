@@ -13,6 +13,12 @@ class AppTextStyles {
     letterSpacing: -0.922,
   );
 
+  static TextStyle get signUpTitle => GoogleFonts.poppins(
+    fontSize: 32,
+    fontWeight: FontWeight.w900,
+    height: 40 / 32,
+  );
+
   static TextStyle get signInTitle => GoogleFonts.cairo(
     fontSize: 32,
     fontWeight: FontWeight.w900,
@@ -30,6 +36,13 @@ class AppTextStyles {
     color: AppColors.hint,
     fontSize: 16,
     fontWeight: FontWeight.w400,
+    height: 24 / 16,
+  );
+
+  static TextStyle get signUpPassword => GoogleFonts.poppins(
+    color: AppColors.gray800,
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
     height: 24 / 16,
   );
 
