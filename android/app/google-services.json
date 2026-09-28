@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "508691236350",
+    "project_id": "my-chatoo-chat",
+    "storage_bucket": "my-chatoo-chat.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:508691236350:android:2115e453876fda854f6caf",
+        "android_client_info": {
+          "package_name": "com.example.my_chatoo_chat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWgt47A-B3Hka1WgPp_0r9tVSxEJ3Svls"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
