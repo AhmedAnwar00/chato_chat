@@ -19,6 +19,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(home: SignupPage(controller: controller)),
     );
+    await tester.enterText(find.byType(TextField).at(0), 'Ada');
     await tester.enterText(find.byType(TextField).at(1), 'a@b.com');
     await tester.enterText(find.byType(TextField).at(2), 'secret12');
     await tester.ensureVisible(find.text('Creat Account'));

@@ -16,11 +16,16 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   late final SignUpController _controller =
       widget.controller ?? SignUpController();
+  var _name = '';
   var _email = '';
   var _password = '';
 
   Future<void> _submit() async {
-    final result = _controller.signUp(email: _email, password: _password);
+    final result = _controller.signUp(
+      name: _name,
+      email: _email,
+      password: _password,
+    );
     if (mounted) {
       setState(() {});
     }
@@ -44,6 +49,7 @@ class _SignupPageState extends State<SignupPage> {
         backgroundColor: background,
         body: SafeArea(
           child: SignupBody(
+            onNameChanged: (value) => setState(() => _name = value),
             onEmailChanged: (value) => setState(() => _email = value),
             onPasswordChanged: (value) => setState(() => _password = value),
             onSubmit: _submit,

@@ -11,6 +11,7 @@ import 'package:my_chatoo_chat/features/signup/ui/widgets/signup_submit_button.d
 class SignupBody extends StatelessWidget {
   const SignupBody({
     super.key,
+    required this.onNameChanged,
     required this.onEmailChanged,
     required this.onPasswordChanged,
     required this.onSubmit,
@@ -18,6 +19,7 @@ class SignupBody extends StatelessWidget {
     this.errorMessage,
   });
 
+  final ValueChanged<String> onNameChanged;
   final ValueChanged<String> onEmailChanged;
   final ValueChanged<String> onPasswordChanged;
   final VoidCallback onSubmit;
@@ -45,7 +47,7 @@ class SignupBody extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: Column(
                         children: [
-                          const SignupNameField(),
+                          SignupNameField(onChanged: onNameChanged),
                           const SizedBox(height: 16),
                           SignupEmailField(onChanged: onEmailChanged),
                           const SizedBox(height: 16),
