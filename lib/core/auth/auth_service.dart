@@ -1,26 +1,40 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:my_chatoo_chat/core/auth/auth_failure.dart';
 import 'package:my_chatoo_chat/core/auth/created_auth_user.dart';
 
-typedef CreateEmailPasswordRequest = Future<CreatedAuthUser> Function({
-  required String email,
-  required String password,
-});
+typedef CreateEmailPasswordRequest =
+    Future<CreatedAuthUser> Function({
+      required String email,
+      required String password,
+    });
 
-typedef EmailPasswordRequest = Future<void> Function({
-  required String email,
-  required String password,
-});
+typedef EmailPasswordRequest =
+    Future<void> Function({required String email, required String password});
+
+typedef GoogleIdTokenRequest = Future<String?> Function();
+
+typedef SignInWithCredentialRequest =
+    Future<void> Function(AuthCredential credential);
 
 class AuthService {
   AuthService({
     CreateEmailPasswordRequest? createUserWithEmailAndPassword,
     EmailPasswordRequest? signInWithEmailAndPassword,
+    GoogleIdTokenRequest? requestGoogleIdToken,
+    SignInWithCredentialRequest? signInWithCredential,
   }) : _createUser = createUserWithEmailAndPassword ?? _firebaseCreateUser,
-       _signIn = signInWithEmailAndPassword ?? _firebaseSignIn;
+       _signIn = signInWithEmailAndPassword ?? _firebaseSignIn,
+       _requestGoogleIdToken = requestGoogleIdToken ?? _firebaseGoogleIdToken,
+       _signInWithCredential =
+           signInWithCredential ?? _firebaseSignInWithCredential;
 
   final CreateEmailPasswordRequest _createUser;
   final EmailPasswordRequest _signIn;
+  final GoogleIdTokenRequest _requestGoogleIdToken;
+  final SignInWithCredentialRequest _signInWithCredential;
+
+  static Future<void>? _googleInitialize;
 
   Future<CreatedAuthUser> createUserWithEmailAndPassword({
     required String email,
@@ -40,6 +54,25 @@ class AuthService {
       () => _signIn(email: email, password: password),
       _signInMessage,
     );
+  }
+
+  Future<void> signInWithGoogle() async {
+    try {
+      final idToken = await _requestGoogleIdToken();
+      if (idToken == null || idToken.isEmpty) {
+        throw const AuthFailure('Google sign-in failed. Try again.');
+      }
+      final credential = GoogleAuthProvider.credential(idToken: idToken);
+      await _signInWithCredential(credential);
+    } on GoogleSignInException catch (error) {
+      throw AuthFailure(_googleSignInMessage(error.code));
+    } on FirebaseAuthException catch (error) {
+      throw AuthFailure(_googleAuthMessage(error.code));
+    } on AuthFailure {
+      rethrow;
+    } on Object {
+      throw const AuthFailure('Google sign-in failed. Try again.');
+    }
   }
 
   Future<T> _guard<T>(
@@ -78,6 +111,61 @@ class AuthService {
       email: email,
       password: password,
     );
+  }
+
+  static Future<void> _ensureGoogleInitialized() {
+    final pending = _googleInitialize;
+    if (pending != null) {
+      return pending;
+    }
+    late final Future<void> created;
+    created = GoogleSignIn.instance.initialize().catchError((
+      Object error,
+      StackTrace stackTrace,
+    ) {
+      if (identical(_googleInitialize, created)) {
+        _googleInitialize = null;
+      }
+      Error.throwWithStackTrace(error, stackTrace);
+    });
+    _googleInitialize = created;
+    return created;
+  }
+
+  static Future<String?> _firebaseGoogleIdToken() async {
+    await _ensureGoogleInitialized();
+    final account = await GoogleSignIn.instance.authenticate();
+    return account.authentication.idToken;
+  }
+
+  static Future<void> _firebaseSignInWithCredential(
+    AuthCredential credential,
+  ) async {
+    await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
+  static String _googleSignInMessage(GoogleSignInExceptionCode code) {
+    return switch (code) {
+      GoogleSignInExceptionCode.canceled => 'Google sign-in was cancelled.',
+      GoogleSignInExceptionCode.interrupted =>
+        'Google sign-in was interrupted. Try again.',
+      GoogleSignInExceptionCode.clientConfigurationError ||
+      GoogleSignInExceptionCode.providerConfigurationError =>
+        'Google sign-in is not available.',
+      _ => 'Google sign-in failed. Try again.',
+    };
+  }
+
+  static String _googleAuthMessage(String code) {
+    return switch (code) {
+      'user-disabled' => 'This account has been disabled.',
+      'too-many-requests' => 'Too many attempts. Try again later.',
+      'network-request-failed' => 'Check your connection and try again.',
+      'operation-not-allowed' => 'Google sign-in is not available.',
+      'account-exists-with-different-credential' =>
+        'This email is already used with another sign-in method.',
+      _ => 'Google sign-in failed. Try again.',
+    };
   }
 
   static String _signUpMessage(String code) {

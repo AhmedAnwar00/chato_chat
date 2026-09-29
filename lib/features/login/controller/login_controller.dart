@@ -49,6 +49,23 @@ class LoginController {
     }
   }
 
+  Future<void> signInWithGoogle() async {
+    if (status == LoginStatus.loading) {
+      return;
+    }
+    status = LoginStatus.loading;
+    errorMessage = null;
+    try {
+      await _authService.signInWithGoogle();
+      status = LoginStatus.success;
+      errorMessage = null;
+    } on AuthFailure catch (failure) {
+      _fail(failure.message);
+    } on Object {
+      _fail('Google sign-in failed. Try again.');
+    }
+  }
+
   void _fail(String message) {
     status = LoginStatus.error;
     errorMessage = message;

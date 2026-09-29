@@ -3,10 +3,16 @@ import 'package:my_chatoo_chat/core/theme/app_colors.dart';
 import 'package:my_chatoo_chat/core/theme/app_text_styles.dart';
 
 class LoginSocialButton extends StatelessWidget {
-  const LoginSocialButton({super.key, required this.icon, required this.label});
+  const LoginSocialButton({
+    super.key,
+    required this.icon,
+    required this.label,
+    this.onPressed,
+  });
 
   final Widget icon;
   final String label;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +21,7 @@ class LoginSocialButton extends StatelessWidget {
       color: AppColors.socialFill,
       borderRadius: BorderRadius.circular(14),
       child: InkWell(
-        onTap: () {},
+        onTap: onPressed,
         borderRadius: BorderRadius.circular(14),
         child: Padding(
           padding: const EdgeInsets.all(16),

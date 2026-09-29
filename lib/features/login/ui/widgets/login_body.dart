@@ -15,6 +15,7 @@ class LoginBody extends StatelessWidget {
     required this.onIdentifierChanged,
     required this.onPasswordChanged,
     required this.onSubmit,
+    required this.onGooglePressed,
     required this.isLoading,
     this.errorMessage,
   });
@@ -22,6 +23,7 @@ class LoginBody extends StatelessWidget {
   final ValueChanged<String> onIdentifierChanged;
   final ValueChanged<String> onPasswordChanged;
   final VoidCallback onSubmit;
+  final VoidCallback onGooglePressed;
   final bool isLoading;
   final String? errorMessage;
 
@@ -54,11 +56,17 @@ class LoginBody extends StatelessWidget {
                     else
                       LoginErrorMessage(message: errorMessage!),
                     const SizedBox(height: 24),
-                    LoginSubmitButton(isLoading: isLoading, onPressed: onSubmit),
+                    LoginSubmitButton(
+                      isLoading: isLoading,
+                      onPressed: onSubmit,
+                    ),
                     const SizedBox(height: 32),
                     const LoginOrDivider(),
                     const SizedBox(height: 39),
-                    const LoginSocialRow(),
+                    LoginSocialRow(
+                      onGooglePressed: onGooglePressed,
+                      isLoading: isLoading,
+                    ),
                   ],
                 ),
               ),

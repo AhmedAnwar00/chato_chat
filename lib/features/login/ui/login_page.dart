@@ -20,11 +20,17 @@ class _LoginPageState extends State<LoginPage> {
   var _identifier = '';
   var _password = '';
 
-  Future<void> _submit() async {
-    final result = _controller.signIn(
-      identifier: _identifier,
-      password: _password,
+  Future<void> _submit() {
+    return _finish(
+      _controller.signIn(identifier: _identifier, password: _password),
     );
+  }
+
+  Future<void> _signInWithGoogle() {
+    return _finish(_controller.signInWithGoogle());
+  }
+
+  Future<void> _finish(Future<void> result) async {
     if (mounted) {
       setState(() {});
     }
@@ -64,6 +70,7 @@ class _LoginPageState extends State<LoginPage> {
             onIdentifierChanged: (value) => setState(() => _identifier = value),
             onPasswordChanged: (value) => setState(() => _password = value),
             onSubmit: _submit,
+            onGooglePressed: _signInWithGoogle,
             isLoading: _controller.status == LoginStatus.loading,
             errorMessage: _controller.errorMessage,
           ),

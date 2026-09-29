@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:my_chatoo_chat/core/auth/auth_service.dart';
 import 'package:my_chatoo_chat/features/login/controller/login_controller.dart';
 
@@ -86,6 +87,84 @@ void main() {
     expect(calls, 1);
 
     completer.complete();
+    await first;
+    await second;
+
+    expect(controller.status, LoginStatus.success);
+    expect(calls, 1);
+  });
+
+  test('Google success clears the error', () async {
+    final controller = LoginController(
+      authService: AuthService(
+        requestGoogleIdToken: () async => 'google-id-token',
+        signInWithCredential: (_) async {},
+      ),
+    );
+
+    await controller.signInWithGoogle();
+
+    expect(controller.status, LoginStatus.success);
+    expect(controller.errorMessage, isNull);
+  });
+
+  test('Google failure sets the service message', () async {
+    final controller = LoginController(
+      authService: AuthService(
+        requestGoogleIdToken: () async => 'google-id-token',
+        signInWithCredential: (_) async {
+          throw FirebaseAuthException(
+            code: 'account-exists-with-different-credential',
+          );
+        },
+      ),
+    );
+
+    await controller.signInWithGoogle();
+
+    expect(controller.status, LoginStatus.error);
+    expect(
+      controller.errorMessage,
+      'This email is already used with another sign-in method.',
+    );
+  });
+
+  test('Google cancellation sets a friendly message', () async {
+    final controller = LoginController(
+      authService: AuthService(
+        requestGoogleIdToken: () async {
+          throw const GoogleSignInException(
+            code: GoogleSignInExceptionCode.canceled,
+          );
+        },
+      ),
+    );
+
+    await controller.signInWithGoogle();
+
+    expect(controller.status, LoginStatus.error);
+    expect(controller.errorMessage, 'Google sign-in was cancelled.');
+  });
+
+  test('ignores a second Google call while loading', () async {
+    final completer = Completer<String?>();
+    var calls = 0;
+    final controller = LoginController(
+      authService: AuthService(
+        requestGoogleIdToken: () {
+          calls++;
+          return completer.future;
+        },
+        signInWithCredential: (_) async {},
+      ),
+    );
+
+    final first = controller.signInWithGoogle();
+    final second = controller.signInWithGoogle();
+    expect(controller.status, LoginStatus.loading);
+    expect(calls, 1);
+
+    completer.complete('google-id-token');
     await first;
     await second;
 
