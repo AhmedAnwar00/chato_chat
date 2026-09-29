@@ -56,13 +56,14 @@ class DefaultFirebaseOptions {
     projectId: 'my-chatoo-chat',
     storageBucket: 'my-chatoo-chat.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDJ3mF-vT7JP0IGrhqkjbh5AzeUtcrB5wc',
     appId: '1:508691236350:ios:66a3e8de84b891f54f6caf',
     messagingSenderId: '508691236350',
     projectId: 'my-chatoo-chat',
     storageBucket: 'my-chatoo-chat.firebasestorage.app',
+    androidClientId: '508691236350-egvn0e5eqggfnd70s34dc4lr21p2lnpk.apps.googleusercontent.com',
+    iosClientId: '508691236350-etce5tmd9s5r844s2idebd6njhnctt0a.apps.googleusercontent.com',
     iosBundleId: 'com.example.myChatooChat',
   );
 }
