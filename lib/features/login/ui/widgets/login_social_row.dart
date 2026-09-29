@@ -6,10 +6,12 @@ class LoginSocialRow extends StatelessWidget {
   const LoginSocialRow({
     super.key,
     required this.onGooglePressed,
+    required this.onFacebookPressed,
     required this.isLoading,
   });
 
   final VoidCallback onGooglePressed;
+  final VoidCallback onFacebookPressed;
   final bool isLoading;
 
   @override
@@ -20,6 +22,7 @@ class LoginSocialRow extends StatelessWidget {
           child: LoginSocialButton(
             icon: Assets.images.loginFacebook.svg(width: 24, height: 24),
             label: 'Facebook',
+            onPressed: isLoading ? null : onFacebookPressed,
           ),
         ),
         const SizedBox(width: 21),

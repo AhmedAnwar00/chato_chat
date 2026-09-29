@@ -16,6 +16,7 @@ class LoginBody extends StatelessWidget {
     required this.onPasswordChanged,
     required this.onSubmit,
     required this.onGooglePressed,
+    required this.onFacebookPressed,
     required this.isLoading,
     this.errorMessage,
   });
@@ -24,6 +25,7 @@ class LoginBody extends StatelessWidget {
   final ValueChanged<String> onPasswordChanged;
   final VoidCallback onSubmit;
   final VoidCallback onGooglePressed;
+  final VoidCallback onFacebookPressed;
   final bool isLoading;
   final String? errorMessage;
 
@@ -65,6 +67,7 @@ class LoginBody extends StatelessWidget {
                     const SizedBox(height: 39),
                     LoginSocialRow(
                       onGooglePressed: onGooglePressed,
+                      onFacebookPressed: onFacebookPressed,
                       isLoading: isLoading,
                     ),
                   ],

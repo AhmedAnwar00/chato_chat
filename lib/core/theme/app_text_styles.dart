@@ -73,6 +73,39 @@ class AppTextStyles {
     height: 36 / 14,
   );
 
+  static TextStyle get chatContactName => GoogleFonts.cairo(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.32,
+  );
+
+  static TextStyle get chatMessageBody => GoogleFonts.poppins(
+    fontSize: 15.8,
+    fontWeight: FontWeight.w400,
+    height: 21 / 15.8,
+    letterSpacing: -0.2054,
+  );
+
+  static TextStyle get chatMessageTime => GoogleFonts.poppins(
+    fontSize: 11,
+    fontWeight: FontWeight.w400,
+    letterSpacing: 0.55,
+  );
+
+  static TextStyle get chatQuoteAuthor => GoogleFonts.cairo(
+    color: AppColors.chatQuoteAccent,
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    height: 19 / 14,
+    letterSpacing: -0.14,
+  );
+
+  static TextStyle get chatQuoteBody => GoogleFonts.poppins(
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    height: 16 / 12,
+  );
+
   static TextStyle get loginSignUpLink => GoogleFonts.poppins(
     color: AppColors.primaryDark,
     fontSize: 14,

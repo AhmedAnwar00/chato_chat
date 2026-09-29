@@ -17,6 +17,98 @@ import 'package:vector_graphics/vector_graphics.dart' as _vg;
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/chat_avatar.png
+  AssetGenImage get chatAvatar =>
+      const AssetGenImage('assets/images/chat_avatar.png');
+
+  /// File path: assets/images/chat_camera_dark.svg
+  SvgGenImage get chatCameraDark =>
+      const SvgGenImage('assets/images/chat_camera_dark.svg');
+
+  /// File path: assets/images/chat_camera_light.svg
+  SvgGenImage get chatCameraLight =>
+      const SvgGenImage('assets/images/chat_camera_light.svg');
+
+  /// File path: assets/images/chat_check_dark.svg
+  SvgGenImage get chatCheckDark =>
+      const SvgGenImage('assets/images/chat_check_dark.svg');
+
+  /// File path: assets/images/chat_check_light.svg
+  SvgGenImage get chatCheckLight =>
+      const SvgGenImage('assets/images/chat_check_light.svg');
+
+  /// File path: assets/images/chat_chevron_dark.svg
+  SvgGenImage get chatChevronDark =>
+      const SvgGenImage('assets/images/chat_chevron_dark.svg');
+
+  /// File path: assets/images/chat_chevron_light.svg
+  SvgGenImage get chatChevronLight =>
+      const SvgGenImage('assets/images/chat_chevron_light.svg');
+
+  /// File path: assets/images/chat_mic_dark.svg
+  SvgGenImage get chatMicDark =>
+      const SvgGenImage('assets/images/chat_mic_dark.svg');
+
+  /// File path: assets/images/chat_mic_light.svg
+  SvgGenImage get chatMicLight =>
+      const SvgGenImage('assets/images/chat_mic_light.svg');
+
+  /// File path: assets/images/chat_phone_dark.svg
+  SvgGenImage get chatPhoneDark =>
+      const SvgGenImage('assets/images/chat_phone_dark.svg');
+
+  /// File path: assets/images/chat_phone_light.svg
+  SvgGenImage get chatPhoneLight =>
+      const SvgGenImage('assets/images/chat_phone_light.svg');
+
+  /// File path: assets/images/chat_plus_dark.svg
+  SvgGenImage get chatPlusDark =>
+      const SvgGenImage('assets/images/chat_plus_dark.svg');
+
+  /// File path: assets/images/chat_plus_light.svg
+  SvgGenImage get chatPlusLight =>
+      const SvgGenImage('assets/images/chat_plus_light.svg');
+
+  /// File path: assets/images/chat_sticker_dark.svg
+  SvgGenImage get chatStickerDark =>
+      const SvgGenImage('assets/images/chat_sticker_dark.svg');
+
+  /// File path: assets/images/chat_sticker_light.svg
+  SvgGenImage get chatStickerLight =>
+      const SvgGenImage('assets/images/chat_sticker_light.svg');
+
+  /// File path: assets/images/chat_tail_incoming_dark.svg
+  SvgGenImage get chatTailIncomingDark =>
+      const SvgGenImage('assets/images/chat_tail_incoming_dark.svg');
+
+  /// File path: assets/images/chat_tail_incoming_light.svg
+  SvgGenImage get chatTailIncomingLight =>
+      const SvgGenImage('assets/images/chat_tail_incoming_light.svg');
+
+  /// File path: assets/images/chat_tail_outgoing_dark.svg
+  SvgGenImage get chatTailOutgoingDark =>
+      const SvgGenImage('assets/images/chat_tail_outgoing_dark.svg');
+
+  /// File path: assets/images/chat_tail_outgoing_light.svg
+  SvgGenImage get chatTailOutgoingLight =>
+      const SvgGenImage('assets/images/chat_tail_outgoing_light.svg');
+
+  /// File path: assets/images/chat_video_dark.svg
+  SvgGenImage get chatVideoDark =>
+      const SvgGenImage('assets/images/chat_video_dark.svg');
+
+  /// File path: assets/images/chat_video_light.svg
+  SvgGenImage get chatVideoLight =>
+      const SvgGenImage('assets/images/chat_video_light.svg');
+
+  /// File path: assets/images/chat_wallpaper_dark.png
+  AssetGenImage get chatWallpaperDark =>
+      const AssetGenImage('assets/images/chat_wallpaper_dark.png');
+
+  /// File path: assets/images/chat_wallpaper_light.png
+  AssetGenImage get chatWallpaperLight =>
+      const AssetGenImage('assets/images/chat_wallpaper_light.png');
+
   /// File path: assets/images/login_claps.png
   AssetGenImage get loginClaps =>
       const AssetGenImage('assets/images/login_claps.png');
@@ -51,6 +143,29 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<dynamic> get values => [
+    chatAvatar,
+    chatCameraDark,
+    chatCameraLight,
+    chatCheckDark,
+    chatCheckLight,
+    chatChevronDark,
+    chatChevronLight,
+    chatMicDark,
+    chatMicLight,
+    chatPhoneDark,
+    chatPhoneLight,
+    chatPlusDark,
+    chatPlusLight,
+    chatStickerDark,
+    chatStickerLight,
+    chatTailIncomingDark,
+    chatTailIncomingLight,
+    chatTailOutgoingDark,
+    chatTailOutgoingLight,
+    chatVideoDark,
+    chatVideoLight,
+    chatWallpaperDark,
+    chatWallpaperLight,
     loginClaps,
     loginFacebook,
     loginGoogle,

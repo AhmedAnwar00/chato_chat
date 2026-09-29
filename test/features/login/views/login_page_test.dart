@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:my_chatoo_chat/core/auth/auth_service.dart';
 import 'package:my_chatoo_chat/core/routing/app_route.dart';
-import 'package:my_chatoo_chat/features/fake_home/ui/fake_home_page.dart';
+import 'package:my_chatoo_chat/features/chat/ui/chat_page.dart';
 import 'package:my_chatoo_chat/features/login/controller/login_controller.dart';
 import 'package:my_chatoo_chat/features/login/ui/login_page.dart';
 
@@ -46,7 +46,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: LoginPage(controller: controller),
-        routes: {AppRoute.fakeHome.path: (_) => const FakeHomePage()},
+        routes: {AppRoute.chat.path: (_) => const ChatPage()},
       ),
     );
     await tester.enterText(find.byType(TextField).at(0), 'a@b.com');
@@ -57,9 +57,9 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
 
-    expect(find.text('Login Successful'), findsNWidgets(2));
+    expect(find.text('Login Successful'), findsOneWidget);
     expect(find.byType(SnackBar), findsOneWidget);
-    expect(find.byType(FakeHomePage), findsOneWidget);
+    expect(find.byType(ChatPage), findsOneWidget);
   });
 
   testWidgets('failed Google sign-in shows the error snackbar', (tester) async {
@@ -83,7 +83,7 @@ void main() {
 
     expect(find.text('Google sign-in was cancelled.'), findsNWidgets(2));
     expect(find.byType(SnackBar), findsOneWidget);
-    expect(find.byType(FakeHomePage), findsNothing);
+    expect(find.byType(ChatPage), findsNothing);
     expect(find.byType(LoginPage), findsOneWidget);
   });
 
@@ -100,7 +100,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: LoginPage(controller: controller),
-        routes: {AppRoute.fakeHome.path: (_) => const FakeHomePage()},
+        routes: {AppRoute.chat.path: (_) => const ChatPage()},
       ),
     );
     await tester.ensureVisible(find.text('Google'));
@@ -109,8 +109,56 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
 
-    expect(find.text('Login Successful'), findsNWidgets(2));
+    expect(find.text('Login Successful'), findsOneWidget);
     expect(find.byType(SnackBar), findsOneWidget);
-    expect(find.byType(FakeHomePage), findsOneWidget);
+    expect(find.byType(ChatPage), findsOneWidget);
+  });
+
+  testWidgets('failed Facebook sign-in shows the error snackbar', (
+    tester,
+  ) async {
+    final controller = LoginController(
+      authService: AuthService(requestFacebookAccessToken: () async => null),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(home: LoginPage(controller: controller)),
+    );
+    await tester.ensureVisible(find.text('Facebook'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Facebook'));
+    await tester.pump();
+
+    expect(find.text('Facebook sign-in was cancelled.'), findsNWidgets(2));
+    expect(find.byType(SnackBar), findsOneWidget);
+    expect(find.byType(ChatPage), findsNothing);
+    expect(find.byType(LoginPage), findsOneWidget);
+  });
+
+  testWidgets('successful Facebook sign-in shows one snackbar and opens home', (
+    tester,
+  ) async {
+    final controller = LoginController(
+      authService: AuthService(
+        requestFacebookAccessToken: () async => 'facebook-access-token',
+        signInWithCredential: (_) async {},
+      ),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: LoginPage(controller: controller),
+        routes: {AppRoute.chat.path: (_) => const ChatPage()},
+      ),
+    );
+    await tester.ensureVisible(find.text('Facebook'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Facebook'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+
+    expect(find.text('Login Successful'), findsOneWidget);
+    expect(find.byType(SnackBar), findsOneWidget);
+    expect(find.byType(ChatPage), findsOneWidget);
   });
 }

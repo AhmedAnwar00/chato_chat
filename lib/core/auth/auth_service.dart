@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:my_chatoo_chat/core/auth/auth_failure.dart';
 import 'package:my_chatoo_chat/core/auth/created_auth_user.dart';
@@ -14,6 +15,8 @@ typedef EmailPasswordRequest =
 
 typedef GoogleIdTokenRequest = Future<String?> Function();
 
+typedef FacebookAccessTokenRequest = Future<String?> Function();
+
 typedef SignInWithCredentialRequest =
     Future<void> Function(AuthCredential credential);
 
@@ -22,16 +25,20 @@ class AuthService {
     CreateEmailPasswordRequest? createUserWithEmailAndPassword,
     EmailPasswordRequest? signInWithEmailAndPassword,
     GoogleIdTokenRequest? requestGoogleIdToken,
+    FacebookAccessTokenRequest? requestFacebookAccessToken,
     SignInWithCredentialRequest? signInWithCredential,
   }) : _createUser = createUserWithEmailAndPassword ?? _firebaseCreateUser,
        _signIn = signInWithEmailAndPassword ?? _firebaseSignIn,
        _requestGoogleIdToken = requestGoogleIdToken ?? _firebaseGoogleIdToken,
+       _requestFacebookAccessToken =
+           requestFacebookAccessToken ?? _firebaseFacebookAccessToken,
        _signInWithCredential =
            signInWithCredential ?? _firebaseSignInWithCredential;
 
   final CreateEmailPasswordRequest _createUser;
   final EmailPasswordRequest _signIn;
   final GoogleIdTokenRequest _requestGoogleIdToken;
+  final FacebookAccessTokenRequest _requestFacebookAccessToken;
   final SignInWithCredentialRequest _signInWithCredential;
 
   static Future<void>? _googleInitialize;
@@ -72,6 +79,26 @@ class AuthService {
       rethrow;
     } on Object {
       throw const AuthFailure('Google sign-in failed. Try again.');
+    }
+  }
+
+  Future<void> signInWithFacebook() async {
+    try {
+      final accessToken = await _requestFacebookAccessToken();
+      if (accessToken == null) {
+        throw const AuthFailure('Facebook sign-in was cancelled.');
+      }
+      if (accessToken.isEmpty) {
+        throw const AuthFailure('Facebook sign-in failed. Try again.');
+      }
+      final credential = FacebookAuthProvider.credential(accessToken);
+      await _signInWithCredential(credential);
+    } on FirebaseAuthException catch (error) {
+      throw AuthFailure(_facebookAuthMessage(error.code));
+    } on AuthFailure {
+      rethrow;
+    } on Object {
+      throw const AuthFailure('Facebook sign-in failed. Try again.');
     }
   }
 
@@ -138,6 +165,19 @@ class AuthService {
     return account.authentication.idToken;
   }
 
+  static Future<String?> _firebaseFacebookAccessToken() async {
+    final result = await FacebookAuth.instance.login(
+      permissions: const ['email', 'public_profile'],
+      loginTracking: LoginTracking.enabled,
+    );
+    return switch (result.status) {
+      LoginStatus.cancelled => null,
+      LoginStatus.success => result.accessToken?.tokenString ?? '',
+      LoginStatus.failed || LoginStatus.operationInProgress =>
+        throw const AuthFailure('Facebook sign-in failed. Try again.'),
+    };
+  }
+
   static Future<void> _firebaseSignInWithCredential(
     AuthCredential credential,
   ) async {
@@ -165,6 +205,18 @@ class AuthService {
       'account-exists-with-different-credential' =>
         'This email is already used with another sign-in method.',
       _ => 'Google sign-in failed. Try again.',
+    };
+  }
+
+  static String _facebookAuthMessage(String code) {
+    return switch (code) {
+      'user-disabled' => 'This account has been disabled.',
+      'too-many-requests' => 'Too many attempts. Try again later.',
+      'network-request-failed' => 'Check your connection and try again.',
+      'operation-not-allowed' => 'Facebook sign-in is not available.',
+      'account-exists-with-different-credential' =>
+        'This email is already used with another sign-in method.',
+      _ => 'Facebook sign-in failed. Try again.',
     };
   }
 

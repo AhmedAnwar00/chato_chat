@@ -171,6 +171,78 @@ void main() {
     expect(controller.status, LoginStatus.success);
     expect(calls, 1);
   });
+
+  test('Facebook success clears the error', () async {
+    final controller = LoginController(
+      authService: AuthService(
+        requestFacebookAccessToken: () async => 'facebook-access-token',
+        signInWithCredential: (_) async {},
+      ),
+    );
+
+    await controller.signInWithFacebook();
+
+    expect(controller.status, LoginStatus.success);
+    expect(controller.errorMessage, isNull);
+  });
+
+  test('Facebook failure sets the service message', () async {
+    final controller = LoginController(
+      authService: AuthService(
+        requestFacebookAccessToken: () async => 'facebook-access-token',
+        signInWithCredential: (_) async {
+          throw FirebaseAuthException(
+            code: 'account-exists-with-different-credential',
+          );
+        },
+      ),
+    );
+
+    await controller.signInWithFacebook();
+
+    expect(controller.status, LoginStatus.error);
+    expect(
+      controller.errorMessage,
+      'This email is already used with another sign-in method.',
+    );
+  });
+
+  test('Facebook cancellation sets a friendly message', () async {
+    final controller = LoginController(
+      authService: AuthService(requestFacebookAccessToken: () async => null),
+    );
+
+    await controller.signInWithFacebook();
+
+    expect(controller.status, LoginStatus.error);
+    expect(controller.errorMessage, 'Facebook sign-in was cancelled.');
+  });
+
+  test('ignores a second Facebook call while loading', () async {
+    final completer = Completer<String?>();
+    var calls = 0;
+    final controller = LoginController(
+      authService: AuthService(
+        requestFacebookAccessToken: () {
+          calls++;
+          return completer.future;
+        },
+        signInWithCredential: (_) async {},
+      ),
+    );
+
+    final first = controller.signInWithFacebook();
+    final second = controller.signInWithFacebook();
+    expect(controller.status, LoginStatus.loading);
+    expect(calls, 1);
+
+    completer.complete('facebook-access-token');
+    await first;
+    await second;
+
+    expect(controller.status, LoginStatus.success);
+    expect(calls, 1);
+  });
 }
 
 AuthService _failingService() {

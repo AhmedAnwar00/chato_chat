@@ -183,4 +183,82 @@ void main() {
       );
     }
   });
+
+  test('signs in with the Facebook credential', () async {
+    AuthCredential? captured;
+    final service = AuthService(
+      requestFacebookAccessToken: () async => 'facebook-access-token',
+      signInWithCredential: (credential) async {
+        captured = credential;
+      },
+    );
+
+    await service.signInWithFacebook();
+
+    final credential = captured! as OAuthCredential;
+    expect(credential.providerId, 'facebook.com');
+    expect(credential.accessToken, 'facebook-access-token');
+  });
+
+  test('missing Facebook token does not call Firebase', () async {
+    const cases = {
+      null: 'Facebook sign-in was cancelled.',
+      '': 'Facebook sign-in failed. Try again.',
+    };
+
+    for (final entry in cases.entries) {
+      var calls = 0;
+      final service = AuthService(
+        requestFacebookAccessToken: () async => entry.key,
+        signInWithCredential: (_) async {
+          calls++;
+        },
+      );
+
+      await expectLater(
+        service.signInWithFacebook(),
+        throwsA(
+          isA<AuthFailure>().having(
+            (failure) => failure.message,
+            'message',
+            entry.value,
+          ),
+        ),
+      );
+      expect(calls, 0);
+    }
+  });
+
+  test('maps Facebook Firebase errors', () async {
+    const cases = {
+      'invalid-credential': 'Facebook sign-in failed. Try again.',
+      'user-disabled': 'This account has been disabled.',
+      'too-many-requests': 'Too many attempts. Try again later.',
+      'network-request-failed': 'Check your connection and try again.',
+      'operation-not-allowed': 'Facebook sign-in is not available.',
+      'account-exists-with-different-credential':
+          'This email is already used with another sign-in method.',
+      'unknown': 'Facebook sign-in failed. Try again.',
+    };
+
+    for (final entry in cases.entries) {
+      final service = AuthService(
+        requestFacebookAccessToken: () async => 'facebook-access-token',
+        signInWithCredential: (_) async {
+          throw FirebaseAuthException(code: entry.key);
+        },
+      );
+
+      await expectLater(
+        service.signInWithFacebook(),
+        throwsA(
+          isA<AuthFailure>().having(
+            (failure) => failure.message,
+            'message',
+            entry.value,
+          ),
+        ),
+      );
+    }
+  });
 }

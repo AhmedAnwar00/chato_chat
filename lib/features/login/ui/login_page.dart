@@ -30,6 +30,10 @@ class _LoginPageState extends State<LoginPage> {
     return _finish(_controller.signInWithGoogle());
   }
 
+  Future<void> _signInWithFacebook() {
+    return _finish(_controller.signInWithFacebook());
+  }
+
   Future<void> _finish(Future<void> result) async {
     if (mounted) {
       setState(() {});
@@ -49,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
         ..showSnackBar(SnackBar(content: Text(message)));
     }
     if (_controller.status == LoginStatus.success) {
-      Navigator.of(context).pushReplacementNamed(AppRoute.fakeHome.path);
+      Navigator.of(context).pushReplacementNamed(AppRoute.chat.path);
     }
   }
 
@@ -71,6 +75,7 @@ class _LoginPageState extends State<LoginPage> {
             onPasswordChanged: (value) => setState(() => _password = value),
             onSubmit: _submit,
             onGooglePressed: _signInWithGoogle,
+            onFacebookPressed: _signInWithFacebook,
             isLoading: _controller.status == LoginStatus.loading,
             errorMessage: _controller.errorMessage,
           ),

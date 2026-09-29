@@ -29,14 +29,26 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
+				<string>fb1141973228169227</string>
 				<string>com.googleusercontent.apps.508691236350-etce5tmd9s5r844s2idebd6njhnctt0a</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FacebookAppID</key>
+	<string>1141973228169227</string>
+	<key>FacebookClientToken</key>
+	<string>959bc24a36fb2db5315d809437e534f3</string>
+	<key>FacebookDisplayName</key>
+	<string>My Chatoo Chat</string>
 	<key>GIDClientID</key>
 	<string>508691236350-etce5tmd9s5r844s2idebd6njhnctt0a.apps.googleusercontent.com</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fbapi</string>
+		<string>fb-messenger-share-api</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

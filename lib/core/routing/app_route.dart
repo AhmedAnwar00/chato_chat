@@ -2,7 +2,7 @@ enum AppRoute {
   splash('/'),
   login('/login'),
   signUp('/sign-up'),
-  fakeHome('/fake-home');
+  chat('/chat');
 
   const AppRoute(this.path);
 
