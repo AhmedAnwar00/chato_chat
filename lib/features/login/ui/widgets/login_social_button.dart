@@ -23,9 +23,12 @@ class LoginSocialButton extends StatelessWidget {
             children: [
               icon,
               const SizedBox(width: 16),
-              Text(
-                label,
-                style: AppTextStyles.loginSocial.copyWith(color: labelColor),
+              Flexible(
+                child: Text(
+                  label,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.loginSocial.copyWith(color: labelColor),
+                ),
               ),
             ],
           ),

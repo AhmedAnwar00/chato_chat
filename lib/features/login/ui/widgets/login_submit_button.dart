@@ -3,7 +3,14 @@ import 'package:my_chatoo_chat/core/theme/app_colors.dart';
 import 'package:my_chatoo_chat/core/theme/app_text_styles.dart';
 
 class LoginSubmitButton extends StatelessWidget {
-  const LoginSubmitButton({super.key});
+  const LoginSubmitButton({
+    super.key,
+    required this.isLoading,
+    required this.onPressed,
+  });
+
+  final bool isLoading;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +30,23 @@ class LoginSubmitButton extends StatelessWidget {
         color: AppColors.primary,
         borderRadius: BorderRadius.circular(14),
         child: InkWell(
-          onTap: () {},
+          onTap: isLoading ? null : onPressed,
           borderRadius: BorderRadius.circular(14),
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: 60),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
               child: Center(
-                child: Text('Log In', style: AppTextStyles.loginButton),
+                child: isLoading
+                    ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.primaryDark,
+                        ),
+                      )
+                    : Text('Log In', style: AppTextStyles.loginButton),
               ),
             ),
           ),

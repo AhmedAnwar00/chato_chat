@@ -5,7 +5,14 @@ import 'package:my_chatoo_chat/features/signup/ui/widgets/signup_field_shell.dar
 import 'package:my_chatoo_chat/gen/assets.gen.dart';
 
 class SignupPasswordField extends StatefulWidget {
-  const SignupPasswordField({super.key});
+  const SignupPasswordField({
+    super.key,
+    required this.onChanged,
+    required this.onSubmitted,
+  });
+
+  final ValueChanged<String> onChanged;
+  final VoidCallback onSubmitted;
 
   @override
   State<SignupPasswordField> createState() => _SignupPasswordFieldState();
@@ -46,6 +53,8 @@ class _SignupPasswordFieldState extends State<SignupPasswordField> {
           Expanded(
             child: TextField(
               focusNode: _focusNode,
+              onChanged: widget.onChanged,
+              onSubmitted: (_) => widget.onSubmitted(),
               obscureText: _obscure,
               textInputAction: TextInputAction.done,
               cursorColor: AppColors.primary,

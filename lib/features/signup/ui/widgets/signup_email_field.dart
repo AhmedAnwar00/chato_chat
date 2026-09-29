@@ -4,7 +4,9 @@ import 'package:my_chatoo_chat/core/theme/app_text_styles.dart';
 import 'package:my_chatoo_chat/features/signup/ui/widgets/signup_field_shell.dart';
 
 class SignupEmailField extends StatefulWidget {
-  const SignupEmailField({super.key});
+  const SignupEmailField({super.key, required this.onChanged});
+
+  final ValueChanged<String> onChanged;
 
   @override
   State<SignupEmailField> createState() => _SignupEmailFieldState();
@@ -38,6 +40,7 @@ class _SignupEmailFieldState extends State<SignupEmailField> {
       focused: _focusNode.hasFocus,
       child: TextField(
         focusNode: _focusNode,
+        onChanged: widget.onChanged,
         keyboardType: TextInputType.emailAddress,
         textInputAction: TextInputAction.next,
         cursorColor: AppColors.primary,

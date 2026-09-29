@@ -1,10 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:my_chatoo_chat/core/theme/app_colors.dart';
+import 'package:my_chatoo_chat/features/login/controller/login_controller.dart';
 import 'package:my_chatoo_chat/features/login/ui/widgets/login_body.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key, this.controller});
+
+  final LoginController? controller;
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  late final LoginController _controller =
+      widget.controller ?? LoginController();
+  var _identifier = '';
+  var _password = '';
+
+  Future<void> _submit() async {
+    final result = _controller.signIn(
+      identifier: _identifier,
+      password: _password,
+    );
+    if (mounted) {
+      setState(() {});
+    }
+    await result;
+    if (mounted) {
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +45,15 @@ class LoginPage extends StatelessWidget {
           ),
       child: Scaffold(
         backgroundColor: background,
-        body: const SafeArea(child: LoginBody()),
+        body: SafeArea(
+          child: LoginBody(
+            onIdentifierChanged: (value) => setState(() => _identifier = value),
+            onPasswordChanged: (value) => setState(() => _password = value),
+            onSubmit: _submit,
+            isLoading: _controller.status == LoginStatus.loading,
+            errorMessage: _controller.errorMessage,
+          ),
+        ),
       ),
     );
   }
