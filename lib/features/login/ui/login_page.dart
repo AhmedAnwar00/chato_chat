@@ -33,6 +33,15 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
     setState(() {});
+    final message = _controller.status == LoginStatus.success
+        ? 'Login Successful'
+        : _controller.errorMessage;
+    if (message != null) {
+      final messenger = ScaffoldMessenger.of(context);
+      messenger
+        ..clearSnackBars()
+        ..showSnackBar(SnackBar(content: Text(message)));
+    }
     if (_controller.status == LoginStatus.success) {
       Navigator.of(context).pushReplacementNamed(AppRoute.fakeHome.path);
     }

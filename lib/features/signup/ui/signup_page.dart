@@ -30,8 +30,18 @@ class _SignupPageState extends State<SignupPage> {
       setState(() {});
     }
     await result;
-    if (mounted) {
-      setState(() {});
+    if (!mounted) {
+      return;
+    }
+    setState(() {});
+    final message = _controller.status == SignUpStatus.success
+        ? 'Account created.'
+        : _controller.errorMessage;
+    if (message != null) {
+      final messenger = ScaffoldMessenger.of(context);
+      messenger
+        ..clearSnackBars()
+        ..showSnackBar(SnackBar(content: Text(message)));
     }
   }
 
