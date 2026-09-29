@@ -12,7 +12,20 @@
           "package_name": "com.example.my_chatoo_chat"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "508691236350-egvn0e5eqggfnd70s34dc4lr21p2lnpk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.my_chatoo_chat",
+            "certificate_hash": "0d55694bdf9f222e5087601dd69a3f1a28b8eca9"
+          }
+        },
+        {
+          "client_id": "508691236350-sovvfmfnq0kroemqm7n8oggcmel9qvtb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDWgt47A-B3Hka1WgPp_0r9tVSxEJ3Svls"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "508691236350-sovvfmfnq0kroemqm7n8oggcmel9qvtb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "508691236350-etce5tmd9s5r844s2idebd6njhnctt0a.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.myChatooChat"
+              }
+            }
+          ]
         }
       }
     }
