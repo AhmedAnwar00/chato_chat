@@ -12,8 +12,7 @@ class ChatReactionBadge extends StatelessWidget {
     final brightness = Theme.of(context).brightness;
     return Container(
       height: 24.5,
-      padding: const EdgeInsets.fromLTRB(9, 2, 9, 2),
-      alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(vertical: 4.25),
       decoration: BoxDecoration(
         color: AppColors.chatReactionFill(brightness),
         borderRadius: BorderRadius.circular(13),

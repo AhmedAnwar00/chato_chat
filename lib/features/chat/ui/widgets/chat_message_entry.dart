@@ -24,7 +24,9 @@ class ChatMessageEntry extends StatelessWidget {
           Transform.translate(
             offset: const Offset(0, -4),
             child: Padding(
-              padding: EdgeInsets.only(left: message.outgoing ? 0 : 10),
+              padding: EdgeInsets.only(
+                left: message.outgoing ? 0 : (message.hasQuote ? 4 : 10),
+              ),
               child: ChatReactionBadge(message: message),
             ),
           ),
