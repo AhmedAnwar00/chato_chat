@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:my_chatoo_chat/core/routing/app_route.dart';
 import 'package:my_chatoo_chat/core/theme/app_colors.dart';
 import 'package:my_chatoo_chat/features/login/controller/login_controller.dart';
 import 'package:my_chatoo_chat/features/login/ui/widgets/login_body.dart';
@@ -28,8 +29,12 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {});
     }
     await result;
-    if (mounted) {
-      setState(() {});
+    if (!mounted) {
+      return;
+    }
+    setState(() {});
+    if (_controller.status == LoginStatus.success) {
+      Navigator.of(context).pushReplacementNamed(AppRoute.fakeHome.path);
     }
   }
 
