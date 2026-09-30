@@ -7,10 +7,55 @@ import 'package:my_chatoo_chat/features/chat/ui/widgets/chat_header.dart';
 import 'package:my_chatoo_chat/features/chat/ui/widgets/chat_message_list.dart';
 import 'package:my_chatoo_chat/features/chat/ui/widgets/chat_wallpaper.dart';
 
-class ChatPage extends StatelessWidget {
-  const ChatPage({super.key, this.controller = const ChatController()});
+class ChatPage extends StatefulWidget {
+  const ChatPage({super.key, this.controller});
 
-  final ChatController controller;
+  final ChatController? controller;
+
+  @override
+  State<ChatPage> createState() => _ChatPageState();
+}
+
+class _ChatPageState extends State<ChatPage> {
+  late final ChatController _controller = widget.controller ?? ChatController();
+  String? _visibleError;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.start(_handleChange);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<bool> _send(String body) async {
+    await _controller.send(body);
+    return _controller.sendStatus == ChatSendStatus.success;
+  }
+
+  void _handleChange() {
+    if (!mounted) return;
+    setState(() {});
+    final message = _controller.errorMessage;
+    if (message == null) {
+      _visibleError = null;
+      return;
+    }
+    if (message == _visibleError) return;
+    _visibleError = message;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final messenger = ScaffoldMessenger.maybeOf(context);
+      if (messenger == null) return;
+      messenger
+        ..clearSnackBars()
+        ..showSnackBar(SnackBar(content: Text(message)));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +74,9 @@ class ChatPage extends StatelessWidget {
             const ChatWallpaper(),
             Column(
               children: [
-                ChatHeader(thread: controller.thread),
-                Expanded(child: ChatMessageList(thread: controller.thread)),
-                const ChatComposer(),
+                ChatHeader(thread: _controller.thread),
+                Expanded(child: ChatMessageList(thread: _controller.thread)),
+                ChatComposer(onSend: _send),
               ],
             ),
           ],

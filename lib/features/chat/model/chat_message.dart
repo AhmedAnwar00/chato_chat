@@ -16,4 +16,34 @@ class ChatMessage {
   final String? reaction;
 
   bool get hasQuote => quoteAuthor != null && quoteBody != null;
+
+  Map<String, dynamic> toMap() {
+    return {
+      'body': body,
+      'timeLabel': timeLabel,
+      'outgoing': outgoing,
+      if (quoteAuthor != null) 'quoteAuthor': quoteAuthor,
+      if (quoteBody != null) 'quoteBody': quoteBody,
+      if (reaction != null) 'reaction': reaction,
+    };
+  }
+
+  factory ChatMessage.fromMap(
+    Map<Object?, Object?> json, {
+    required bool outgoing,
+  }) {
+    return ChatMessage(
+      body: _text(json, 'body') ?? '',
+      timeLabel: _text(json, 'timeLabel') ?? '',
+      outgoing: outgoing,
+      quoteAuthor: _text(json, 'quoteAuthor'),
+      quoteBody: _text(json, 'quoteBody'),
+      reaction: _text(json, 'reaction'),
+    );
+  }
+
+  static String? _text(Map<Object?, Object?> json, String key) {
+    final value = json[key];
+    return value is String ? value : null;
+  }
 }

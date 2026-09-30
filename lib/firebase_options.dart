@@ -55,6 +55,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '508691236350',
     projectId: 'my-chatoo-chat',
     storageBucket: 'my-chatoo-chat.firebasestorage.app',
+    databaseURL: 'https://my-chatoo-chat-default-rtdb.firebaseio.com',
   );
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDJ3mF-vT7JP0IGrhqkjbh5AzeUtcrB5wc',
@@ -62,8 +63,11 @@ class DefaultFirebaseOptions {
     messagingSenderId: '508691236350',
     projectId: 'my-chatoo-chat',
     storageBucket: 'my-chatoo-chat.firebasestorage.app',
-    androidClientId: '508691236350-egvn0e5eqggfnd70s34dc4lr21p2lnpk.apps.googleusercontent.com',
-    iosClientId: '508691236350-etce5tmd9s5r844s2idebd6njhnctt0a.apps.googleusercontent.com',
+    databaseURL: 'https://my-chatoo-chat-default-rtdb.firebaseio.com',
+    androidClientId:
+        '508691236350-egvn0e5eqggfnd70s34dc4lr21p2lnpk.apps.googleusercontent.com',
+    iosClientId:
+        '508691236350-etce5tmd9s5r844s2idebd6njhnctt0a.apps.googleusercontent.com',
     iosBundleId: 'com.example.myChatooChat',
   );
 }

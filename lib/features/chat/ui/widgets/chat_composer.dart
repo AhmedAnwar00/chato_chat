@@ -6,8 +6,31 @@ import 'package:my_chatoo_chat/core/theme/app_colors.dart';
 import 'package:my_chatoo_chat/features/chat/ui/widgets/chat_themed_icon.dart';
 import 'package:my_chatoo_chat/gen/assets.gen.dart';
 
-class ChatComposer extends StatelessWidget {
-  const ChatComposer({super.key});
+class ChatComposer extends StatefulWidget {
+  const ChatComposer({super.key, this.onSend});
+
+  final Future<bool> Function(String body)? onSend;
+
+  @override
+  State<ChatComposer> createState() => _ChatComposerState();
+}
+
+class _ChatComposerState extends State<ChatComposer> {
+  final _messageController = TextEditingController();
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit(String value) async {
+    final onSend = widget.onSend;
+    if (onSend == null) return;
+    final sent = await onSend(value);
+    if (!mounted || !sent) return;
+    _messageController.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +68,11 @@ class ChatComposer extends StatelessWidget {
                           children: [
                             Expanded(
                               child: TextField(
+                                controller: _messageController,
                                 minLines: 1,
                                 maxLines: 5,
+                                textInputAction: TextInputAction.send,
+                                onSubmitted: _submit,
                                 style: GoogleFonts.poppins(
                                   color: textColor,
                                   fontSize: 16,

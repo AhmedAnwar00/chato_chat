@@ -8,6 +8,8 @@
 	<string>com.googleusercontent.apps.508691236350-etce5tmd9s5r844s2idebd6njhnctt0a</string>
 	<key>API_KEY</key>
 	<string>AIzaSyDJ3mF-vT7JP0IGrhqkjbh5AzeUtcrB5wc</string>
+	<key>DATABASE_URL</key>
+	<string>https://my-chatoo-chat-default-rtdb.firebaseio.com</string>
 	<key>GCM_SENDER_ID</key>
 	<string>508691236350</string>
 	<key>PLIST_VERSION</key>
