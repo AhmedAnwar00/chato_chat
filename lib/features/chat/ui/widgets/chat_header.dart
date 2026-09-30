@@ -46,15 +46,15 @@ class ChatHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16),
-              ChatThemedIcon(
-                dark: Assets.images.chatVideoDark,
-                light: Assets.images.chatVideoLight,
-              ),
-              const SizedBox(width: 16),
               ChatSettingsButton(
                 color: nameColor,
                 onToggleTheme: onToggleTheme,
                 onLogout: onLogout,
+              ),
+              const SizedBox(width: 16),
+              ChatThemedIcon(
+                dark: Assets.images.chatVideoDark,
+                light: Assets.images.chatVideoLight,
               ),
               const SizedBox(width: 16),
               ChatThemedIcon(
