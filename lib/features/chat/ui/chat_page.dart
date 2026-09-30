@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:my_chatoo_chat/core/routing/app_route.dart';
 import 'package:my_chatoo_chat/core/theme/app_colors.dart';
 import 'package:my_chatoo_chat/features/chat/controller/chat_controller.dart';
 import 'package:my_chatoo_chat/features/chat/ui/widgets/chat_composer.dart';
@@ -8,9 +9,10 @@ import 'package:my_chatoo_chat/features/chat/ui/widgets/chat_message_list.dart';
 import 'package:my_chatoo_chat/features/chat/ui/widgets/chat_wallpaper.dart';
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({super.key, this.controller});
+  const ChatPage({super.key, this.controller, this.onToggleTheme});
 
   final ChatController? controller;
+  final void Function(Brightness brightness)? onToggleTheme;
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -35,6 +37,18 @@ class _ChatPageState extends State<ChatPage> {
   Future<bool> _send(String body) async {
     await _controller.send(body);
     return _controller.sendStatus == ChatSendStatus.success;
+  }
+
+  void _toggleTheme(Brightness brightness) {
+    widget.onToggleTheme?.call(brightness);
+  }
+
+  Future<void> _signOut() async {
+    final signedOut = await _controller.signOut();
+    if (!mounted || !signedOut) {
+      return;
+    }
+    Navigator.of(context).pushReplacementNamed(AppRoute.login.path);
   }
 
   void _handleChange() {
@@ -74,7 +88,11 @@ class _ChatPageState extends State<ChatPage> {
             const ChatWallpaper(),
             Column(
               children: [
-                ChatHeader(thread: _controller.thread),
+                ChatHeader(
+                  thread: _controller.thread,
+                  onToggleTheme: _toggleTheme,
+                  onLogout: _signOut,
+                ),
                 Expanded(child: ChatMessageList(thread: _controller.thread)),
                 ChatComposer(onSend: _send),
               ],

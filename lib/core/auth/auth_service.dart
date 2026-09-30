@@ -20,6 +20,8 @@ typedef FacebookAccessTokenRequest = Future<String?> Function();
 typedef SignInWithCredentialRequest =
     Future<void> Function(AuthCredential credential);
 
+typedef SignOutRequest = Future<void> Function();
+
 class AuthService {
   AuthService({
     CreateEmailPasswordRequest? createUserWithEmailAndPassword,
@@ -27,19 +29,22 @@ class AuthService {
     GoogleIdTokenRequest? requestGoogleIdToken,
     FacebookAccessTokenRequest? requestFacebookAccessToken,
     SignInWithCredentialRequest? signInWithCredential,
+    SignOutRequest? signOut,
   }) : _createUser = createUserWithEmailAndPassword ?? _firebaseCreateUser,
        _signIn = signInWithEmailAndPassword ?? _firebaseSignIn,
        _requestGoogleIdToken = requestGoogleIdToken ?? _firebaseGoogleIdToken,
        _requestFacebookAccessToken =
            requestFacebookAccessToken ?? _firebaseFacebookAccessToken,
        _signInWithCredential =
-           signInWithCredential ?? _firebaseSignInWithCredential;
+           signInWithCredential ?? _firebaseSignInWithCredential,
+       _signOut = signOut ?? _firebaseSignOut;
 
   final CreateEmailPasswordRequest _createUser;
   final EmailPasswordRequest _signIn;
   final GoogleIdTokenRequest _requestGoogleIdToken;
   final FacebookAccessTokenRequest _requestFacebookAccessToken;
   final SignInWithCredentialRequest _signInWithCredential;
+  final SignOutRequest _signOut;
 
   static Future<void>? _googleInitialize;
 
@@ -100,6 +105,10 @@ class AuthService {
     } on Object {
       throw const AuthFailure('Facebook sign-in failed. Try again.');
     }
+  }
+
+  Future<void> signOut() {
+    return _guard(_signOut, _signOutMessage);
   }
 
   Future<T> _guard<T>(
@@ -184,6 +193,10 @@ class AuthService {
     await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
+  static Future<void> _firebaseSignOut() {
+    return FirebaseAuth.instance.signOut();
+  }
+
   static String _googleSignInMessage(GoogleSignInExceptionCode code) {
     return switch (code) {
       GoogleSignInExceptionCode.canceled => 'Google sign-in was cancelled.',
@@ -229,6 +242,14 @@ class AuthService {
       'too-many-requests' => 'Too many attempts. Try again later.',
       'network-request-failed' => 'Check your connection and try again.',
       _ => 'Sign up failed. Try again.',
+    };
+  }
+
+  static String _signOutMessage(String code) {
+    return switch (code) {
+      'network-request-failed' => 'Check your connection and try again.',
+      'too-many-requests' => 'Too many attempts. Try again later.',
+      _ => 'Sign out failed. Try again.',
     };
   }
 

@@ -7,9 +7,10 @@ import 'package:my_chatoo_chat/features/splash/controller/splash_controller.dart
 import 'package:my_chatoo_chat/features/splash/ui/splash_page.dart';
 
 class AppRouter {
-  const AppRouter({this.splashController});
+  const AppRouter({this.splashController, this.onToggleTheme});
 
   final SplashController? splashController;
+  final void Function(Brightness brightness)? onToggleTheme;
 
   Route<dynamic> onGenerateRoute(RouteSettings settings) {
     final route = AppRoute.values.where((item) => item.path == settings.name);
@@ -17,7 +18,7 @@ class AppRouter {
       AppRoute.splash => SplashPage(controller: splashController),
       AppRoute.login => const LoginPage(),
       AppRoute.signUp => const SignupPage(),
-      AppRoute.chat => const ChatPage(),
+      AppRoute.chat => ChatPage(onToggleTheme: onToggleTheme),
       null => SplashPage(controller: splashController),
     };
     return MaterialPageRoute(settings: settings, builder: (_) => page);

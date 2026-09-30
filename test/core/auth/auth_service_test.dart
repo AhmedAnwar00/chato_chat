@@ -261,4 +261,44 @@ void main() {
       );
     }
   });
+
+  test('signs out the current user', () async {
+    var calls = 0;
+    final service = AuthService(
+      signOut: () async {
+        calls++;
+      },
+    );
+
+    await service.signOut();
+
+    expect(calls, 1);
+  });
+
+  test('maps sign-out Firebase errors', () async {
+    const cases = {
+      'network-request-failed': 'Check your connection and try again.',
+      'too-many-requests': 'Too many attempts. Try again later.',
+      'unknown': 'Sign out failed. Try again.',
+    };
+
+    for (final entry in cases.entries) {
+      final service = AuthService(
+        signOut: () async {
+          throw FirebaseAuthException(code: entry.key);
+        },
+      );
+
+      await expectLater(
+        service.signOut(),
+        throwsA(
+          isA<AuthFailure>().having(
+            (failure) => failure.message,
+            'message',
+            entry.value,
+          ),
+        ),
+      );
+    }
+  });
 }
