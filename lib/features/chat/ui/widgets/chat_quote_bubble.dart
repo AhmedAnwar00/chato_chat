@@ -25,12 +25,15 @@ class ChatQuoteBubble extends StatelessWidget {
             ChatQuoteBox(message: message),
             const SizedBox(height: 3),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(
-                  message.body,
-                  style: AppTextStyles.chatMessageBody.copyWith(color: color),
+                Expanded(
+                  child: Text(
+                    message.body,
+                    style: AppTextStyles.chatMessageBody.copyWith(color: color),
+                  ),
                 ),
-                const Spacer(),
+                const SizedBox(width: 8),
                 ChatMessageMeta(message: message),
               ],
             ),

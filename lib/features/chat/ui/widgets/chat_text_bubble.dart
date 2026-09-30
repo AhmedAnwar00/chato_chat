@@ -19,9 +19,11 @@ class ChatTextBubble extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Text(
-            message.body,
-            style: AppTextStyles.chatMessageBody.copyWith(color: color),
+          Flexible(
+            child: Text(
+              message.body,
+              style: AppTextStyles.chatMessageBody.copyWith(color: color),
+            ),
           ),
           const SizedBox(width: 8),
           ChatMessageMeta(message: message),

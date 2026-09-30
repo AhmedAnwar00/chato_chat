@@ -69,9 +69,10 @@ class _ChatComposerState extends State<ChatComposer> {
                             Expanded(
                               child: TextField(
                                 controller: _messageController,
+                                keyboardType: TextInputType.multiline,
+                                textInputAction: TextInputAction.send,
                                 minLines: 1,
                                 maxLines: 5,
-                                textInputAction: TextInputAction.send,
                                 onSubmitted: _submit,
                                 style: GoogleFonts.poppins(
                                   color: textColor,
