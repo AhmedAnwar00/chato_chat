@@ -31,11 +31,11 @@ class ChatQuoteBox extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      message.quoteAuthor ?? '',
+                      message.quotedAuthor ?? '',
                       style: AppTextStyles.chatQuoteAuthor,
                     ),
                     Text(
-                      message.quoteBody ?? '',
+                      message.quotedBody ?? '',
                       style: AppTextStyles.chatQuoteBody.copyWith(
                         color: textColor,
                       ),

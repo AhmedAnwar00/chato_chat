@@ -6,6 +6,8 @@ import 'package:my_chatoo_chat/features/chat/controller/chat_controller.dart';
 import 'package:my_chatoo_chat/features/chat/ui/widgets/chat_composer.dart';
 import 'package:my_chatoo_chat/features/chat/ui/widgets/chat_header.dart';
 import 'package:my_chatoo_chat/features/chat/ui/widgets/chat_message_list.dart';
+import 'package:my_chatoo_chat/features/chat/ui/widgets/chat_reply_action.dart';
+import 'package:my_chatoo_chat/features/chat/ui/widgets/chat_reply_preview.dart';
 import 'package:my_chatoo_chat/features/chat/ui/widgets/chat_wallpaper.dart';
 
 class ChatPage extends StatefulWidget {
@@ -75,6 +77,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
     final isDark = brightness == Brightness.dark;
+    final reply = _controller.pendingReply;
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: (isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark)
           .copyWith(
@@ -93,7 +96,20 @@ class _ChatPageState extends State<ChatPage> {
                   onToggleTheme: _toggleTheme,
                   onLogout: _signOut,
                 ),
-                Expanded(child: ChatMessageList(thread: _controller.thread)),
+                Expanded(
+                  child: ChatMessageList(
+                    thread: _controller.thread,
+                    selectedMessageId: _controller.selectedMessageId,
+                    onSelectMessage: _controller.selectMessage,
+                  ),
+                ),
+                if (_controller.selectedMessage != null)
+                  ChatReplyAction(onReply: _controller.beginReply),
+                if (reply != null)
+                  ChatReplyPreview(
+                    reply: reply,
+                    onClear: _controller.clearReply,
+                  ),
                 ChatComposer(onSend: _send),
               ],
             ),

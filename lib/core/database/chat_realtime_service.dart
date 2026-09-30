@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:my_chatoo_chat/core/database/chat_database_failure.dart';
 import 'package:my_chatoo_chat/features/chat/model/chat_message.dart';
+import 'package:my_chatoo_chat/features/chat/model/chat_reply.dart';
 
 typedef MessageWriter = Future<void> Function(Map<String, dynamic> data);
 typedef MessageSnapshotSource = Stream<Object?> Function();
@@ -25,13 +26,16 @@ class ChatRealtimeService {
   final String? Function() _currentUserId;
   final DateTime Function() _now;
 
-  Future<void> sendMessage(String body) async {
+  Future<void> sendMessage(String body, {ChatReply? reply}) async {
     try {
       await _writeMessage({
         'body': body,
         'timeLabel': _timeLabel(_now()),
         'senderId': _currentUserId(),
         'createdAt': ServerValue.timestamp,
+        if (reply != null) 'replyToMessageId': reply.replyToMessageId,
+        if (reply != null) 'replyToSender': reply.replyToSender,
+        if (reply != null) 'replyToBody': reply.replyToBody,
       });
     } on Object catch (error) {
       throw _failure(error, sending: true);
@@ -102,6 +106,7 @@ class ChatRealtimeService {
           createdAt: createdAt is num ? createdAt.toInt() : 0,
           message: ChatMessage.fromMap(
             data,
+            id: entry.key.toString(),
             outgoing: senderId is String && senderId == currentUserId,
           ),
         ),

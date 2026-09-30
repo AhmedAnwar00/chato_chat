@@ -29,6 +29,106 @@ void main() {
     controller.dispose();
   });
 
+  test('reply stores the selected sender, body, and message id', () async {
+    Map<String, dynamic>? written;
+    const message = ChatMessage(
+      id: 'abc',
+      body: 'original',
+      timeLabel: '11:06',
+      outgoing: false,
+    );
+    final controller = ChatController(
+      thread: const ChatThread(contactName: 'Ada', messages: [message]),
+      service: ChatRealtimeService(
+        currentUserId: () => 'me',
+        watchSnapshots: () => const Stream.empty(),
+        writeMessage: (data) async {
+          written = data;
+        },
+      ),
+    );
+    controller.start(() {});
+
+    controller.selectMessage(message);
+    expect(controller.selectedMessage, message);
+    controller.beginReply();
+
+    expect(controller.selectedMessageId, isNull);
+    expect(controller.pendingReply?.replyToMessageId, 'abc');
+    expect(controller.pendingReply?.replyToSender, 'Ada');
+    expect(controller.pendingReply?.replyToBody, 'original');
+
+    await controller.send('response');
+
+    expect(written?['replyToMessageId'], 'abc');
+    expect(written?['replyToSender'], 'Ada');
+    expect(written?['replyToBody'], 'original');
+    expect(controller.pendingReply, isNull);
+    controller.dispose();
+  });
+
+  test('outgoing reply uses You as the sender', () async {
+    const message = ChatMessage(
+      id: 'abc',
+      body: 'original',
+      timeLabel: '11:06',
+      outgoing: true,
+    );
+    final controller = ChatController(
+      thread: const ChatThread(contactName: 'Ada', messages: [message]),
+      service: ChatRealtimeService(
+        currentUserId: () => 'me',
+        watchSnapshots: () => const Stream.empty(),
+        writeMessage: (data) async {},
+      ),
+    );
+    controller.start(() {});
+
+    controller.selectMessage(message);
+    controller.selectMessage(message);
+    expect(controller.selectedMessageId, isNull);
+    controller.selectMessage(message);
+    controller.beginReply();
+
+    expect(controller.pendingReply?.replyToSender, 'You');
+    controller.dispose();
+  });
+
+  test('failed send keeps the reply preview', () async {
+    final controller = ChatController(
+      thread: const ChatThread(
+        contactName: 'Ada',
+        messages: [
+          ChatMessage(
+            id: 'abc',
+            body: 'original',
+            timeLabel: '11:06',
+            outgoing: false,
+          ),
+        ],
+      ),
+      service: ChatRealtimeService(
+        currentUserId: () => 'me',
+        watchSnapshots: () => const Stream.empty(),
+        writeMessage: (data) async {
+          throw FirebaseException(
+            plugin: 'firebase_database',
+            code: 'unavailable',
+          );
+        },
+      ),
+    );
+    controller.start(() {});
+    controller.selectMessage(controller.thread.messages.single);
+    controller.beginReply();
+
+    await controller.send('response');
+
+    expect(controller.sendStatus, ChatSendStatus.error);
+    expect(controller.pendingReply?.replyToMessageId, 'abc');
+    controller.dispose();
+  });
+
   test('blank text does not write', () async {
     var writes = 0;
     final controller = ChatController(

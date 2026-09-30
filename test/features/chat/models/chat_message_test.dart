@@ -25,4 +25,35 @@ void main() {
       isTrue,
     );
   });
+
+  test('serializes reply fields and prefers them in the quote preview', () {
+    const message = ChatMessage(
+      id: 'msg-1',
+      body: 'reply',
+      timeLabel: '11:07',
+      outgoing: true,
+      replyToMessageId: 'msg-0',
+      replyToSender: 'Ada',
+      replyToBody: 'original',
+    );
+
+    expect(message.toMap(), {
+      'body': 'reply',
+      'timeLabel': '11:07',
+      'outgoing': true,
+      'replyToMessageId': 'msg-0',
+      'replyToSender': 'Ada',
+      'replyToBody': 'original',
+    });
+    final restored = ChatMessage.fromMap(
+      message.toMap(),
+      id: 'msg-1',
+      outgoing: true,
+    );
+    expect(restored.id, 'msg-1');
+    expect(restored.hasReply, isTrue);
+    expect(restored.showsQuote, isTrue);
+    expect(restored.quotedAuthor, 'Ada');
+    expect(restored.quotedBody, 'original');
+  });
 }

@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:my_chatoo_chat/core/database/chat_database_failure.dart';
 import 'package:my_chatoo_chat/core/database/chat_realtime_service.dart';
+import 'package:my_chatoo_chat/features/chat/model/chat_reply.dart';
 
 void main() {
   test('writes body, time, sender, and a server timestamp', () async {
@@ -60,12 +61,68 @@ void main() {
       'second',
       'same time later key',
     ]);
+    expect(messages[0].id, 'a');
     expect(messages[0].outgoing, isFalse);
     expect(messages[0].quoteAuthor, 'You');
     expect(messages[0].quoteBody, 'Quote text');
     expect(messages[0].reaction, '❤️');
     expect(messages[1].outgoing, isTrue);
     expect(messages[2].outgoing, isFalse);
+  });
+
+  test('writes reply fields with the message', () async {
+    Map<String, dynamic>? written;
+    final service = ChatRealtimeService(
+      currentUserId: () => 'me',
+      now: () => DateTime(2026, 9, 30, 15, 18),
+      writeMessage: (data) async {
+        written = data;
+      },
+    );
+
+    await service.sendMessage(
+      'response',
+      reply: const ChatReply(
+        replyToMessageId: 'abc',
+        replyToSender: 'Ada',
+        replyToBody: 'original',
+      ),
+    );
+
+    expect(written, {
+      'body': 'response',
+      'timeLabel': '15:18',
+      'senderId': 'me',
+      'createdAt': ServerValue.timestamp,
+      'replyToMessageId': 'abc',
+      'replyToSender': 'Ada',
+      'replyToBody': 'original',
+    });
+  });
+
+  test('reads stored reply fields onto the message', () async {
+    final service = ChatRealtimeService(
+      currentUserId: () => 'me',
+      watchSnapshots: () => Stream.value({
+        'reply-1': {
+          'body': 'response',
+          'timeLabel': '11:08',
+          'senderId': 'me',
+          'createdAt': 1,
+          'replyToMessageId': 'abc',
+          'replyToSender': 'Ada',
+          'replyToBody': 'original',
+        },
+      }),
+    );
+
+    final message = (await service.watchMessages().first).single;
+
+    expect(message.id, 'reply-1');
+    expect(message.replyToMessageId, 'abc');
+    expect(message.replyToSender, 'Ada');
+    expect(message.replyToBody, 'original');
+    expect(message.hasReply, isTrue);
   });
 
   test('returns an empty list when the snapshot is empty', () async {

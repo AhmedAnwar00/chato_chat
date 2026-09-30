@@ -5,6 +5,7 @@ import 'package:my_chatoo_chat/core/auth/auth_service.dart';
 import 'package:my_chatoo_chat/core/database/chat_database_failure.dart';
 import 'package:my_chatoo_chat/core/database/chat_realtime_service.dart';
 import 'package:my_chatoo_chat/features/chat/model/chat_message.dart';
+import 'package:my_chatoo_chat/features/chat/model/chat_reply.dart';
 import 'package:my_chatoo_chat/features/chat/model/chat_thread.dart';
 
 enum ChatSendStatus { initial, loading, success, error }
@@ -29,6 +30,8 @@ class ChatController {
   ChatThread thread;
   ChatSendStatus sendStatus = ChatSendStatus.initial;
   String? errorMessage;
+  String? selectedMessageId;
+  ChatReply? pendingReply;
 
   StreamSubscription<List<ChatMessage>>? _subscription;
   void Function()? _onChanged;
@@ -53,6 +56,8 @@ class ChatController {
       thread = ChatThread(contactName: thread.contactName, messages: const []);
       sendStatus = ChatSendStatus.initial;
       errorMessage = null;
+      selectedMessageId = null;
+      pendingReply = null;
       _notify();
       return true;
     } on AuthFailure catch (failure) {
@@ -70,18 +75,66 @@ class ChatController {
     }
   }
 
+  ChatMessage? get selectedMessage {
+    final id = selectedMessageId;
+    if (id == null) {
+      return null;
+    }
+    for (final message in thread.messages) {
+      if (message.id == id) {
+        return message;
+      }
+    }
+    return null;
+  }
+
+  void selectMessage(ChatMessage message) {
+    final id = message.id;
+    if (id == null) {
+      return;
+    }
+    selectedMessageId = selectedMessageId == id ? null : id;
+    _notify();
+  }
+
+  void beginReply() {
+    final message = selectedMessage;
+    final id = message?.id;
+    if (message == null || id == null) {
+      return;
+    }
+    pendingReply = ChatReply(
+      replyToMessageId: id,
+      replyToSender: message.outgoing ? 'You' : thread.contactName,
+      replyToBody: message.body,
+    );
+    selectedMessageId = null;
+    _notify();
+  }
+
+  void clearReply() {
+    if (pendingReply == null) {
+      return;
+    }
+    pendingReply = null;
+    _notify();
+  }
+
   Future<void> send(String body) async {
     final trimmed = body.trim();
     if (trimmed.isEmpty || sendStatus == ChatSendStatus.loading) {
       return;
     }
+    final reply = pendingReply;
     sendStatus = ChatSendStatus.loading;
     errorMessage = null;
     _notify();
     try {
-      await _service.sendMessage(trimmed);
+      await _service.sendMessage(trimmed, reply: reply);
       sendStatus = ChatSendStatus.success;
       errorMessage = null;
+      pendingReply = null;
+      selectedMessageId = null;
     } on ChatDatabaseFailure catch (failure) {
       sendStatus = ChatSendStatus.error;
       errorMessage = failure.message;
