@@ -1,1 +1,36 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"my-chatoo-chat","appId":"1:508691236350:android:2115e453876fda854f6caf","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"my-chatoo-chat","configurations":{"android":"1:508691236350:android:2115e453876fda854f6caf","ios":"1:508691236350:ios:66a3e8de84b891f54f6caf"}}}}}}
+{
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "runtime": "nodejs22",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ],
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "my-chatoo-chat",
+          "appId": "1:508691236350:android:2115e453876fda854f6caf",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "my-chatoo-chat",
+          "configurations": {
+            "android": "1:508691236350:android:2115e453876fda854f6caf",
+            "ios": "1:508691236350:ios:66a3e8de84b891f54f6caf"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,4 @@
+node_modules/
+*.local
+*-firebase-adminsdk-*.json
+serviceAccount*.json
