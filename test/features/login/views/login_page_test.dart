@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:my_chatoo_chat/core/auth/auth_service.dart';
+import 'package:my_chatoo_chat/core/messaging/device_token_save_result.dart';
 import 'package:my_chatoo_chat/core/routing/app_route.dart';
 import 'package:my_chatoo_chat/features/chat/ui/chat_page.dart';
 import 'package:my_chatoo_chat/features/login/controller/login_controller.dart';
@@ -41,6 +42,7 @@ void main() {
         signInWithEmailAndPassword:
             ({required String email, required String password}) async {},
       ),
+      saveDeviceToken: _savedToken,
     );
 
     await tester.pumpWidget(
@@ -95,6 +97,7 @@ void main() {
         requestGoogleIdToken: () async => 'google-id-token',
         signInWithCredential: (_) async {},
       ),
+      saveDeviceToken: _savedToken,
     );
 
     await tester.pumpWidget(
@@ -143,6 +146,7 @@ void main() {
         requestFacebookAccessToken: () async => 'facebook-access-token',
         signInWithCredential: (_) async {},
       ),
+      saveDeviceToken: _savedToken,
     );
 
     await tester.pumpWidget(
@@ -161,4 +165,8 @@ void main() {
     expect(find.byType(SnackBar), findsOneWidget);
     expect(find.byType(ChatPage), findsOneWidget);
   });
+}
+
+Future<DeviceTokenSaveResult> _savedToken() async {
+  return const DeviceTokenSaveResult(DeviceTokenSaveStatus.saved);
 }

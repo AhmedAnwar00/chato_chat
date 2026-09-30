@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:my_chatoo_chat/core/auth/auth_service.dart';
 import 'package:my_chatoo_chat/core/auth/created_auth_user.dart';
 import 'package:my_chatoo_chat/core/firestore/user_firestore_service.dart';
+import 'package:my_chatoo_chat/core/messaging/device_token_save_result.dart';
 import 'package:my_chatoo_chat/features/signup/controller/signup_controller.dart';
 
 void main() {
@@ -80,6 +81,7 @@ void main() {
               document = data;
             },
       ),
+      saveDeviceToken: _savedToken,
     );
 
     await controller.signUp(
@@ -111,10 +113,7 @@ void main() {
       ),
       userFirestoreService: UserFirestoreService(
         writeUser:
-            ({
-              required String uid,
-              required Map<String, dynamic> data,
-            }) async {
+            ({required String uid, required Map<String, dynamic> data}) async {
               writes++;
             },
       ),
@@ -137,10 +136,7 @@ void main() {
       ),
       userFirestoreService: UserFirestoreService(
         writeUser:
-            ({
-              required String uid,
-              required Map<String, dynamic> data,
-            }) async {
+            ({required String uid, required Map<String, dynamic> data}) async {
               throw FirebaseException(
                 plugin: 'cloud_firestore',
                 code: 'unavailable',
@@ -173,6 +169,7 @@ void main() {
               required Map<String, dynamic> data,
             }) async {},
       ),
+      saveDeviceToken: _savedToken,
     );
 
     final first = controller.signUp(
@@ -195,6 +192,73 @@ void main() {
     expect(controller.status, SignUpStatus.success);
     expect(calls, 1);
   });
+
+  test('success still succeeds when saving the token fails', () async {
+    var saves = 0;
+    final controller = SignUpController(
+      authService: AuthService(
+        createUserWithEmailAndPassword:
+            ({required String email, required String password}) async {
+              return CreatedAuthUser(uid: 'user-1', email: email);
+            },
+      ),
+      userFirestoreService: UserFirestoreService(
+        writeUser:
+            ({
+              required String uid,
+              required Map<String, dynamic> data,
+            }) async {},
+      ),
+      saveDeviceToken: () async {
+        saves++;
+        return const DeviceTokenSaveResult(DeviceTokenSaveStatus.failed);
+      },
+    );
+
+    await controller.signUp(name: 'Ada', email: 'a@b.com', password: 'secret');
+
+    expect(saves, 1);
+    expect(controller.status, SignUpStatus.success);
+    expect(controller.errorMessage, isNull);
+  });
+
+  test('profile failure does not save the device token', () async {
+    var saves = 0;
+    final controller = SignUpController(
+      authService: AuthService(
+        createUserWithEmailAndPassword:
+            ({required String email, required String password}) async {
+              return const CreatedAuthUser(uid: 'user-1', email: 'a@b.com');
+            },
+      ),
+      userFirestoreService: UserFirestoreService(
+        writeUser:
+            ({required String uid, required Map<String, dynamic> data}) async {
+              throw FirebaseException(
+                plugin: 'cloud_firestore',
+                code: 'permission-denied',
+              );
+            },
+      ),
+      saveDeviceToken: () async {
+        saves++;
+        return const DeviceTokenSaveResult(DeviceTokenSaveStatus.saved);
+      },
+    );
+
+    await controller.signUp(name: 'Ada', email: 'a@b.com', password: 'secret');
+
+    expect(saves, 0);
+    expect(controller.status, SignUpStatus.error);
+    expect(
+      controller.errorMessage,
+      'You do not have permission to save your profile.',
+    );
+  });
+}
+
+Future<DeviceTokenSaveResult> _savedToken() async {
+  return const DeviceTokenSaveResult(DeviceTokenSaveStatus.saved);
 }
 
 AuthService _failingAuth() {

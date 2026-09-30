@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:my_chatoo_chat/core/messaging/notification_messaging_service.dart';
+import 'package:my_chatoo_chat/core/messaging/authenticated_device_token_store.dart';
 import 'package:my_chatoo_chat/core/routing/app_route.dart';
 import 'package:my_chatoo_chat/core/routing/app_router.dart';
 import 'package:my_chatoo_chat/core/theme/app_theme.dart';
@@ -15,7 +15,7 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
   WidgetsBinding.instance.addPostFrameCallback((_) {
-    unawaited(NotificationMessagingService().requestDeviceToken());
+    unawaited(AuthenticatedDeviceTokenStore().saveForCurrentUser());
   });
 }
 

@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:my_chatoo_chat/core/auth/auth_service.dart';
 import 'package:my_chatoo_chat/core/auth/created_auth_user.dart';
 import 'package:my_chatoo_chat/core/firestore/user_firestore_service.dart';
+import 'package:my_chatoo_chat/core/messaging/device_token_save_result.dart';
 import 'package:my_chatoo_chat/features/signup/controller/signup_controller.dart';
 import 'package:my_chatoo_chat/features/signup/ui/signup_page.dart';
 
@@ -103,8 +104,12 @@ void main() {
       ),
       userFirestoreService: UserFirestoreService(
         writeUser:
-            ({required String uid, required Map<String, dynamic> data}) async {},
+            ({
+              required String uid,
+              required Map<String, dynamic> data,
+            }) async {},
       ),
+      saveDeviceToken: _savedToken,
     );
 
     await tester.pumpWidget(
@@ -118,6 +123,10 @@ void main() {
     expect(find.byType(SnackBar), findsOneWidget);
     expect(find.byType(SignupPage), findsOneWidget);
   });
+}
+
+Future<DeviceTokenSaveResult> _savedToken() async {
+  return const DeviceTokenSaveResult(DeviceTokenSaveStatus.saved);
 }
 
 Future<void> _enterAccount(WidgetTester tester) async {

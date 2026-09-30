@@ -3,6 +3,8 @@ import 'package:my_chatoo_chat/core/auth/auth_identifier.dart';
 import 'package:my_chatoo_chat/core/auth/auth_service.dart';
 import 'package:my_chatoo_chat/core/firestore/firestore_failure.dart';
 import 'package:my_chatoo_chat/core/firestore/user_firestore_service.dart';
+import 'package:my_chatoo_chat/core/messaging/authenticated_device_token_store.dart';
+import 'package:my_chatoo_chat/core/messaging/device_token_save_result.dart';
 import 'package:my_chatoo_chat/features/signup/model/user_profile.dart';
 
 enum SignUpStatus { initial, loading, success, error }
@@ -11,11 +13,16 @@ class SignUpController {
   SignUpController({
     AuthService? authService,
     UserFirestoreService? userFirestoreService,
+    Future<DeviceTokenSaveResult> Function()? saveDeviceToken,
   }) : _authService = authService ?? AuthService(),
-       _userFirestoreService = userFirestoreService ?? UserFirestoreService();
+       _userFirestoreService = userFirestoreService ?? UserFirestoreService(),
+       _saveDeviceToken =
+           saveDeviceToken ??
+           AuthenticatedDeviceTokenStore().saveForCurrentUser;
 
   final AuthService _authService;
   final UserFirestoreService _userFirestoreService;
+  final Future<DeviceTokenSaveResult> Function() _saveDeviceToken;
 
   SignUpStatus status = SignUpStatus.initial;
   String? errorMessage;
@@ -61,6 +68,7 @@ class SignUpController {
           createdAt: DateTime.now(),
         ),
       );
+      await _persistDeviceToken();
       status = SignUpStatus.success;
       errorMessage = null;
     } on AuthFailure catch (failure) {
@@ -69,6 +77,14 @@ class SignUpController {
       _fail(failure.message);
     } on Object {
       _fail('Sign up failed. Try again.');
+    }
+  }
+
+  Future<void> _persistDeviceToken() async {
+    try {
+      await _saveDeviceToken();
+    } on Object {
+      return;
     }
   }
 

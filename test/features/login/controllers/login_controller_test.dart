@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:my_chatoo_chat/core/auth/auth_service.dart';
+import 'package:my_chatoo_chat/core/messaging/device_token_save_result.dart';
 import 'package:my_chatoo_chat/features/login/controller/login_controller.dart';
 
 void main() {
@@ -43,6 +44,7 @@ void main() {
               capturedEmail = email;
             },
       ),
+      saveDeviceToken: _savedToken,
     );
 
     await controller.signIn(identifier: '  a@b.com  ', password: 'secret');
@@ -79,6 +81,7 @@ void main() {
               return completer.future;
             },
       ),
+      saveDeviceToken: _savedToken,
     );
 
     final first = controller.signIn(identifier: 'a@b.com', password: 'secret');
@@ -100,6 +103,7 @@ void main() {
         requestGoogleIdToken: () async => 'google-id-token',
         signInWithCredential: (_) async {},
       ),
+      saveDeviceToken: _savedToken,
     );
 
     await controller.signInWithGoogle();
@@ -157,6 +161,7 @@ void main() {
         },
         signInWithCredential: (_) async {},
       ),
+      saveDeviceToken: _savedToken,
     );
 
     final first = controller.signInWithGoogle();
@@ -178,6 +183,7 @@ void main() {
         requestFacebookAccessToken: () async => 'facebook-access-token',
         signInWithCredential: (_) async {},
       ),
+      saveDeviceToken: _savedToken,
     );
 
     await controller.signInWithFacebook();
@@ -229,6 +235,7 @@ void main() {
         },
         signInWithCredential: (_) async {},
       ),
+      saveDeviceToken: _savedToken,
     );
 
     final first = controller.signInWithFacebook();
@@ -243,6 +250,66 @@ void main() {
     expect(controller.status, LoginStatus.success);
     expect(calls, 1);
   });
+
+  test('email success still succeeds when saving the token fails', () async {
+    var saves = 0;
+    final controller = LoginController(
+      authService: AuthService(
+        signInWithEmailAndPassword:
+            ({required String email, required String password}) async {},
+      ),
+      saveDeviceToken: () async {
+        saves++;
+        return const DeviceTokenSaveResult(DeviceTokenSaveStatus.failed);
+      },
+    );
+
+    await controller.signIn(identifier: 'a@b.com', password: 'secret');
+
+    expect(saves, 1);
+    expect(controller.status, LoginStatus.success);
+    expect(controller.errorMessage, isNull);
+  });
+
+  test('email failure does not save the device token', () async {
+    var saves = 0;
+    final controller = LoginController(
+      authService: AuthService(
+        signInWithEmailAndPassword:
+            ({required String email, required String password}) async {
+              throw FirebaseAuthException(code: 'wrong-password');
+            },
+      ),
+      saveDeviceToken: () async {
+        saves++;
+        return const DeviceTokenSaveResult(DeviceTokenSaveStatus.saved);
+      },
+    );
+
+    await controller.signIn(identifier: 'a@b.com', password: 'secret');
+
+    expect(saves, 0);
+    expect(controller.status, LoginStatus.error);
+  });
+
+  test('a thrown token save does not fail login', () async {
+    final controller = LoginController(
+      authService: AuthService(
+        signInWithEmailAndPassword:
+            ({required String email, required String password}) async {},
+      ),
+      saveDeviceToken: () async => throw StateError('database down'),
+    );
+
+    await controller.signIn(identifier: 'a@b.com', password: 'secret');
+
+    expect(controller.status, LoginStatus.success);
+    expect(controller.errorMessage, isNull);
+  });
+}
+
+Future<DeviceTokenSaveResult> _savedToken() async {
+  return const DeviceTokenSaveResult(DeviceTokenSaveStatus.saved);
 }
 
 AuthService _failingService() {
